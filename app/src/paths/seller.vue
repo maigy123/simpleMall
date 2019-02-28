@@ -12,7 +12,7 @@
         .menu
           li(v-for="(item, index) in menu" :key="index" @click="showDetail(index)") {{ item }}
         .detail
-          MyGoods(v-if="detailX === 0")
+          MyGoods(v-if="detailX === 0" :type="type")
           PostGoods(v-else-if="detailX === 1")
           MyInfo(v-else="detailX ==== 2")
 </template>
@@ -29,7 +29,8 @@ export default {
       isLogin: false,
       sellerName: '',
       menu:  ['我的商品', '上线商品', '个人信息'],
-      detailX: 'none'
+      detailX: 'none',
+      type: "seller"
     }
   },
   components: {

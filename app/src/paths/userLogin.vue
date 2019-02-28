@@ -1,8 +1,8 @@
 <template lang="pug">
   .userPath(ref="user")
-    .loginDiv(v-if="!isLogin" ref="loginDiv")
+    .loginDiv(ref="loginDiv")
       .loginFrame
-        Login(v-on:haveLogin="haveLogin")
+        Login(:type="type" v-on:haveLogin="haveLogin")
 </template>
 
 <script>
@@ -12,6 +12,7 @@ export default {
     return {
       minHeight: 0,
       userName: '',
+      type: 'user'
     }
   },
   components: {
@@ -23,6 +24,12 @@ export default {
   mounted () {
     this.$refs.user.style.minHeight = this.minHeight - 130 + 'px'
     this.$refs.loginDiv.style.minHeight = this.minHeight - 130 + 'px'
+  },
+
+  methods: {
+    haveLogin () {
+      this.$router.push('index')
+    }
   }
 }
 </script>

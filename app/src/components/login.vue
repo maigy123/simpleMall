@@ -1,5 +1,6 @@
 <template lang="pug">
   .login
+    Error(v-if="isErr" :text="errText")
     .tips
       span 登录/注册
     .name
@@ -8,7 +9,10 @@
     .pwd
       img(src="@/assets/pwd.png")
       input(type="password" v-model="pwd" placeholder="请输入密码")
-    .phone(v-if="!isReg")
+    .pwd(v-if="(type === 'user') && (goReg)")
+      img(src="@/assets/pwd.png")
+      input(type="password" v-model="payPwd" placeholder="请输入六位支付密码（仅限数字）")
+    .phone(v-if="goReg")
       img(src="@/assets/phone.png")
       input(type="number" v-model="phone" placeholder="请输入手机号")
     .button(@click="toSure")
@@ -17,22 +21,22 @@
       span 忘记密码
       span(@click="toReg") 去注册
       span(@click="toLogin") 去登录
-    .error(v-if="isErr")
-      Error(:text="errText")
 </template>
 
 <script>
 import Error from '@/components/error.vue'
 export default {
+  props: ['type'],
   data () {
     return{
       name: '',
       pwd: '',
       phone: '',
-      isReg: true,
+      goReg: false,
       btnText: '登 录',
       isErr: false,
-      errText: ''
+      errText: '',
+      payPwd: ''
     }
   },
   components: {
@@ -47,11 +51,11 @@ export default {
 
   methods: {
     toReg () {
-      this.isReg = false
+      this.goReg = true
       this.btnText = '注 册'
     },
     toLogin () {
-      this.isReg = true
+      this.toReg = false
       this.btnText = '登 录'
     },
     toSure () {
@@ -60,48 +64,84 @@ export default {
         this.errDeal()
         return
       }
-      if (this.isReg) {
-        var params = {name: this.name, pwd: this.pwd}
-        this.$reqs.post("/sellers/login", params).then((res) => {
-          if (res.data.code === 0) {
-            this.$cookies.set('sellerName', this.name)
-            this.$emit('haveLogin', 1)
-            this.$cookies.set('sellerPhone', res.data.phone)
-            this.$cookies.set('income', res.data.income)
-          } else {
-            this.errText = res.data.err
-            this.errDeal()
-          }
-        })
-      } else {
-        this.register()
-      }
-    },
-    register () {
-      if (this.phone === '' || this.phone.length !== 11) {
+      if (!this.goReg) {
+        if (this.type !== 'user') {
+          this.sellerLogin()
+        } else {
+          this.userLogin()
+        }
+      } else if (this.phone === '' || this.phone.length !== 11) {
         this.errText = '请填写正确的手机号'
         this.errDeal()
-        return
-      } else{
-        var params = {name: this.name, pwd: this.pwd, phone: this.phone}
-        this.$reqs.post("/sellers/reg", params).then((res) => {
-          if (res.data.code === 0) {
-            this.$cookies.set('sellerName', this.name)
-            this.$emit('haveLogin', 1)
-            this.$cookies.set('sellerPhone', this.phone)
-            this.$cookies.set('income', 0)
-          } else {
-            this.errText = res.data.err
-            this.errDeal()
-          }
-        })
+      } else if (this.type !== 'user') {
+        this.SellerRegister()
+      } else {
+        this.userRegister()
       }
+
+    },
+    SellerRegister () {
+      var params = {name: this.name, pwd: this.pwd, phone: this.phone}
+      this.$reqs.post("/sellers/reg", params).then((res) => {
+        if (res.data.code === 0) {
+          this.$cookies.set('sellerName', this.name)
+          this.$emit('haveLogin', 1)
+          this.$cookies.set('sellerPhone', this.phone)
+          this.$cookies.set('income', 0)
+        } else {
+          this.errText = res.data.err
+          this.errDeal()
+        }
+      })
     },
     errDeal () {
       this.isErr = true
       setTimeout(() => {
         this.isErr = false
       }, 2000)
+    },
+    userLogin () {
+      var params = {name: this.name, pwd: this.pwd}
+      this.$reqs.post("/users/login", params).then((res) => {
+        if (res.data.code === 0) {
+          this.$cookies.set('userName', this.name)
+          this.$emit('haveLogin')
+        } else {
+          this.errText = res.data.error
+          this.errDeal()
+        }
+      })
+    },
+    sellerLogin () {
+      var params = {name: this.name, pwd: this.pwd}
+      this.$reqs.post("/sellers/login", params).then((res) => {
+        if (res.data.code === 0) {
+          this.$cookies.set('sellerName', this.name)
+          this.$emit('haveLogin', 1)
+          this.$cookies.set('sellerPhone', res.data.phone)
+          this.$cookies.set('income', res.data.income)
+        } else {
+          this.errText = res.data.err
+          this.errDeal()
+        }
+      })
+    },
+    userRegister () {
+      if (this.payPwd.length === 6) {
+        var params = {name: this.name, pwd: this.pwd, phone: this.phone, paypwd: this.payPwd}
+        this.$reqs.post("/users/reg", params).then((res) => {
+          if (res.data.code === 0) {
+            this.$cookies.set('userName', this.name)
+            this.$emit('haveLogin')
+          } else {
+            this.errText = res.data.err
+            this.errDeal()
+          }
+        })
+      } else {
+        this.errText = '请填写正确的支付密码'
+        this.errDeal()
+      }
     }
   }
 }
@@ -176,14 +216,6 @@ export default {
   }
   .button:hover{
     background: gold;
-  }
-
-  .error{
-    position: absolute;
-    top: 150px;
-    left: 100px;
-    width: 200px;
-    height: 50px;
   }
 }
 </style>

@@ -9,6 +9,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var sellersRouter = require('./routes/sellers');
 var goodsRouter = require('./routes/goods');
+var managersRouter = require('./routes/managers');
 var app = express();
 
 //跨域  后期删
@@ -48,6 +49,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/sellers', sellersRouter);
 app.use('/goods', goodsRouter);
+app.use('/managers', managersRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

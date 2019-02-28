@@ -29,7 +29,7 @@ router.post('/login', (req, res, next) => {
         }
       } else {
         let obj = {code:2, err: '该账户没注册，清前去注册'}
-        res.send()
+        res.send(obj)
       }
     }
     res.end()

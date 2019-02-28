@@ -9,79 +9,82 @@ db.once('open', () => console.log('Mongo connection successed'))
 
 const model = mongoose.Schema({
   name: String,
-  pwd: String
+  pwd: String,
+  paypwd: String,
+  phone: String,
+  balance: Number,
+  collect: Array
 }, {versionKey: false})
-const Models = mongoose.model('usertest', model)
+const Models = mongoose.model('users', model)
 
-
-router.post('/find', (req, res, next) => {
-  
-  var selector = {name : req.body.username}
+/* 买家登录 */
+router.post('/login', (req, res, next) => {
+  var selector = {name : req.body.name}
+  var obj = {coed: 0}
   Models.find(selector, (err, data) => {
     if (err) {
-      res.send("Error:" + err)
+      obj = {code: 1, error: err}
     } else {
-      res.send(data)
+      if (data[0]) {
+        if (data[0].pwd === req.body.pwd) {
+          obj = {code: 0}
+        } else {
+          obj = {code: 1, error: '账号或密码错误'}
+        }
+      } else {
+        obj = {code: 2, error: '该账户没注册，清前去注册'}
+      }
     }
+    res.send(obj)
     res.end()
   })
-  /* Models.find(selector, (err, data) => {
-    if (err) {
-      res.send("Error:" + err)
-    } else {
-      res.send(data)
-    }
-    res.end()
-  }).limit(2) */
 })
 
-router.post('/add', (req, res, next) => {
+/* 买家注册 */
+router.post('/reg', (req, res, next) => {
   findFirst(req, res, (result) => {
+    var obj = {code: 0}
     if (result === 1) {
       let newData = new Models({
-        name: req.body.username,
-        pwd: req.body.pwd
+        name: req.body.name,
+        pwd: req.body.pwd,
+        paypwd: req.body.paypwd,
+        phone: req.body.phone,
+        balance: 0.0,
+        collect: []
       })
       newData.save((err, data) => {
         if (err) {
-          res.send("Error:" + err)
-        } else {
-          res.send(data)
+          obj = {code: 1, error: err}
         }
+        res.send(obj)
         res.end()
       })
     } else if (result === 0) {
-      res.send('已存在该用户')
+      obj.code = 1
+      obj.err = '已存在该用户名'
+      res.send(obj)
       res.end()
     }
   })
 })
 
-router.post('/update', (req, res, next) => {
+/* 个人信息 */
+router.post('/myInfo', (req, res, next) => {
   var selector = {name : req.body.username}
-  var set = {pwd: req.body.pwd}
-  Models.update(selector, set, (err, data) => {
+  var obj = {code: 0}
+  Models.find(selector, (err, data) => {
     if (err) {
-      res.send("Error:" + err)
+      obj = {code: 1, error: err}
     } else {
-      res.send(data)
+      obj.data = data
     }
+    res.send(obj)
     res.end()
   })
 })
 
-router.post('/delete', (req, res, next) => {
-  var selector = {name : req.body.username}
-  Models.remove(selector, (err, data) => {
-    if (err) {
-      res.send("Error:" + err)
-    } else {
-      res.send(data)
-    }
-    res.end()
-  })
-})
-
+/* 查找是否已存在 */
 function findFirst (req, res, cb) {
   var selector = {name : req.body.username}
   Models.find(selector, (err, data) => {
@@ -100,5 +103,3 @@ function findFirst (req, res, cb) {
 }
 
 module.exports = router
- 
-

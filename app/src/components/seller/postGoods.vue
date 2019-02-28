@@ -1,5 +1,6 @@
 <template lang="pug">
   .postGoods
+    Error(v-if="errText !== ''" :text="errText")
     .header
       span 上线商品
     .body
@@ -27,8 +28,6 @@
              textarea(v-model="desc" ref="textarea")
           .postGood
             span(@click="postGood") 上线商品
-          .error(v-if="errText !== ''")
-            Error(:text="errText")
       .imgShow
         img(v-if="imgSrc !== ''" :src="imgSrc")
 </template>
@@ -225,12 +224,6 @@ export default {
           span:hover{
             background: #EE4000;
           }
-        }
-        .error{
-          position: absolute;
-          top: 350px;
-          width: 200px;
-          height: 50px;
         }
       }
     }

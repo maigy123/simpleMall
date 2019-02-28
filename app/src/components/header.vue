@@ -1,10 +1,13 @@
 <template lang="pug">
   .header
+    Error(v-if="isErr" :text="errText")
     .left
       span 嗨，欢迎来到xxx
-      span 请登录
+      // span 请登录
+      router-link(tag="span" to="./manager")
+        span 后台管理
       router-link(tag="span" to="./userLogin")
-        span 免费注册
+        span 登录/注册
       router-link(tag="span" to="./")
         span 首页
     .right
@@ -15,14 +18,24 @@
       .seller
         router-link(tag="span" to="./seller")
           span 当卖家
+      .personal(@click="toPersonal")
+        span 个人中心
 </template>
 
 <script>
+import Error from '@/components/error.vue'
 export default {
   data () {
     return{
-      carsNum: 0
+      carsNum: 0,
+      type: 'user',
+      isErr: false,
+      errText: ''
     }
+  },
+
+  components: {
+    Error
   },
 
   created () {
@@ -33,6 +46,20 @@ export default {
   },
 
   methods: {
+    toPersonal () {
+      if (this.$cookies.get('userName') === null) {
+        this.errText = '请登录后再进入个人中心'
+        this.errDeal()
+      } else {
+        this.$router.push({name: 'personal'})
+      }
+    },
+    errDeal () {
+      this.isErr = true
+      setTimeout(() => {
+        this.isErr = false
+      }, 2000)
+    }
   }
 }
 </script>
@@ -79,7 +106,7 @@ export default {
     }
   }
 
-  .seller{
+  .seller, .personal{
     float: right;
     height: 100%;
     margin-right: 20px;
@@ -87,7 +114,7 @@ export default {
       line-height: 30px;
     }
   }
-  .seller:hover{
+  .seller:hover, .personal:hover{
     color: red;
   }
 }

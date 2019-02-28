@@ -12,13 +12,15 @@ const model = mongoose.Schema({
   status: Number,
   desc: String,
   selledNum: 0,
+  examine: Number,
+  reason: String,
   imgSrc: String
 }, {versionKey: false})
 const Models = mongoose.model('good', model)
 
 /* 上线商品 */
 router.post('/postGoods', (req, res, next) => {
-  let newData = new Models({ name: req.body.name, price: req.body.price, sellerName: req.body.sellerName, class: req.body.class, status: 0, desc: req.body.desc, selledNum: 0, imgSrc: req.body.imgSrc})
+  let newData = new Models({ name: req.body.name, price: req.body.price, sellerName: req.body.sellerName, class: req.body.class, status: 0, desc: req.body.desc, selledNum: 0, examine: 0, reason: '', imgSrc: req.body.imgSrc})
   newData.save((err, data) => {
     var obj = {code: 0}
     if (err) {
@@ -168,5 +170,38 @@ router.post('/classSortFind', (req, res, next) => {
     }
   })
 })
+
+/* 待审核商品 */
+router.post('/managerGoods', (req, res, next) => {
+  var selector = {examine: 0}
+  var obj = {code: 0}
+  Models.find(selector, (err, data) => {
+    if (err) {
+      obj = {code: 1, error: err}
+    } else {
+      obj.data = data
+    }
+    res.send(obj)
+    res.end()
+  })
+})
+
+/* 审核商品 */
+router.post('/examineGoods', (req, res, next) => {
+  var selector = {_id: req.body.id}
+  var set = {examine: req.body.examine, reason: req.body.reason}
+  var obj = {code: 0}
+  Models.update(selector, set, (err, data) => {
+    if (err) {
+      obj = {code: 1, error: err}
+    } else {
+      obj.data = data
+    }
+    res.send(obj)
+    res.end()
+  })
+})
+
+
 
 module.exports = router

@@ -87,7 +87,7 @@ export default {
       var params = {path: this.path}
       this.$reqs.post('goods/getData', params).then((res) => {
         if (res.data.code === 0) {
-          console.log(res.data.data)
+          // console.log(res.data.data)
           this.data = res.data.data
           this.isGetData = true
         }
@@ -133,6 +133,7 @@ export default {
     classSortFind () {
       this.params.path = this.path
       this.$reqs.post('goods/classSortFind', this.params).then((res) => {
+        console.log(res.data)
         if (res.data.code === 0) {
           this.data = res.data.data
           this.dealPaths(res.data.count)

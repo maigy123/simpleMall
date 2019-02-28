@@ -26,9 +26,15 @@ export default {
 
 <style lang="less" scoped>
 .err{
-  width: 100%;
-  height: 100%;
-  background: white;
+  position: fixed;
+  width: 300px;
+  height: 50px;
+  margin:auto;
+  left:0;
+  right:0;
+  top:0;
+  bottom:0;
+  background: #EAEAEA;
   opacity: 0.9;
   z-index: 2;
   display: flex;

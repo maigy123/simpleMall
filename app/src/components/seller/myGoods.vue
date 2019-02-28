@@ -2,26 +2,31 @@
   .myGoods
     .lists(ref="lists")
       .list-item(v-for="(item, index) in data" :key="index")
-        List(:data="item" :index="index" v-on:toDetail="detailIndex")
-    .details
+        List(:data="item" :index="index" :type="type" v-on:toDetail="detailIndex")
+    .details(v-if="type === 'seller'")
       Detail(v-if="goodSelected !== ''" :data="data[goodSelected]" v-on:updateData="updateData")
+    .details(v-if="type === 'manager'")
+      Examine(v-if="goodSelected !== ''" :data="data[goodSelected]" v-on:updateData="updateData")
 </template>
 
 <script>
-import List from '@/components/seller/myGoods/list.vue'
+import List from '@/components/list.vue'
 import Detail from '@/components/seller/myGoods/detail.vue'
+import Examine from '@/components/manager/examine.vue'
 export default {
+  props: ['type'],
   data () {
     return{
       data: [],
       minHeight: 0,
-      goodSelected: ''
+      goodSelected: '',
     }
   },
 
   components: {
     List,
-    Detail
+    Detail,
+    Examine
   },
 
   created () {
@@ -39,12 +44,27 @@ export default {
     },
     updateData () {
       this.data = []
-      this.getData(1)
+      this.getData()
     },
-    getData (x) {
+    getData () {
+      if (this.type === 'manager') {
+        this.getWaitManagerData()
+      } else {
+        this.getMyGoods()
+      }
+    },
+    getMyGoods () {
       var name = this.$cookies.get('sellerName')
       var params = {sellerName: name}
       this.$reqs.post("/goods/myGoods", params).then((res) => {
+        if (res.data.code === 0) {
+          this.data = res.data.data
+        }
+      })
+    },
+    getWaitManagerData () {
+      this.$reqs.post("/goods/managerGoods").then((res) => {
+        console.log(res.data)
         if (res.data.code === 0) {
           this.data = res.data.data
         }
