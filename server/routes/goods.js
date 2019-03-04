@@ -7,7 +7,7 @@ const db = mongoose.connection
 const model = mongoose.Schema({
   name: String,
   price: Number,
-  sellerName: String,
+  sellerId: String,
   class: Number,
   status: Number,
   desc: String,
@@ -20,7 +20,7 @@ const Models = mongoose.model('good', model)
 
 /* 上线商品 */
 router.post('/postGoods', (req, res, next) => {
-  let newData = new Models({ name: req.body.name, price: req.body.price, sellerName: req.body.sellerName, class: req.body.class, status: 0, desc: req.body.desc, selledNum: 0, examine: 0, reason: '', imgSrc: req.body.imgSrc})
+  let newData = new Models({ name: req.body.name, price: req.body.price, sellerId: req.body.sellerId, class: req.body.class, status: 0, desc: req.body.desc, selledNum: 0, examine: 0, reason: '', imgSrc: req.body.imgSrc})
   newData.save((err, data) => {
     var obj = {code: 0}
     if (err) {
@@ -35,7 +35,7 @@ router.post('/postGoods', (req, res, next) => {
 
 /* 查找我的商品 */
 router.post('/myGoods', (req, res, next) => {
-  var selector = {sellerName: req.body.sellerName}
+  var selector = {sellerId: req.body.sellerId}
   var obj = {code: 0}
   Models.find(selector, (err, data) => {
     if (err) {
@@ -142,6 +142,8 @@ router.post('/getPath', (req, res, next) => {
 /* 分类排序查询 */
 router.post('/classSortFind', (req, res, next) => {
   var selector = (req.body.class || req.body.class === 0)? {'class': req.body.class}: {}
+  selector.examine = 1
+  selector.status = 0
   var sorted = (req.body.sort|| req.body.sort === 0)? req.body.sort: {}
   var path = req.body.path
   var obj = {code: 0}

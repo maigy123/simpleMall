@@ -8,6 +8,7 @@ db.once('error', () => console.log('Mongo connection error'))
 db.once('open', () => console.log('Mongo connection successed'))
 
 const model = mongoose.Schema({
+  _id: Object,
   name: String,
   pwd: String,
   paypwd: String,
@@ -27,7 +28,7 @@ router.post('/login', (req, res, next) => {
     } else {
       if (data[0]) {
         if (data[0].pwd === req.body.pwd) {
-          obj = {code: 0}
+          obj = {code: 0, userId: data[0]._id}
         } else {
           obj = {code: 1, error: '账号或密码错误'}
         }
@@ -71,7 +72,8 @@ router.post('/reg', (req, res, next) => {
 
 /* 个人信息 */
 router.post('/myInfo', (req, res, next) => {
-  var selector = {name : req.body.username}
+  var id = mongoose.Types.ObjectId(req.body.userId)
+  var selector = {_id: id}
   var obj = {code: 0}
   Models.find(selector, (err, data) => {
     if (err) {
@@ -81,6 +83,94 @@ router.post('/myInfo', (req, res, next) => {
     }
     res.send(obj)
     res.end()
+  })
+})
+
+/* 修改登录密码 */
+router.post('/alterPwd', (req, res, next) => {
+  var id = mongoose.Types.ObjectId(req.body.userId)
+  var selector = {_id: id}
+  var obj = {code: 0}
+  Models.find(selector, (err, data) => {
+    if (err) {
+      obj = {code: 1, error: err}
+      res.send(obj)
+      res.end()
+    } else if (req.body.phone !== data[0].phone) {
+      obj = {code: 1, error: '手机号不正确'}
+      res.send(obj)
+      res.end()
+    } else {
+      var set = {pwd: req.body.pwd}
+      Models.update(selector, set, (err, data) => {
+        if (err) {
+          obj = {code: 1, error: err}
+        }
+        res.send(obj)
+        res.end()
+      })
+    }
+  })
+})
+
+/* 修改其他 */
+router.post('/alterOthers', (req, res, next) => {
+  var id = mongoose.Types.ObjectId(req.body.userId)
+  var selector = {_id: id}
+  var obj = {code: 0}
+  Models.find(selector, (err, data) => {
+    if (err) {
+      obj = {code: 1, error: err}
+      res.send(obj)
+      res.end()
+    } else if (req.body.pwd !== data[0].pwd) {
+      obj = {code: 1, error: '登录密码不正确'}
+      res.send(obj)
+      res.end()
+    } else {
+      var set = {name: req.body.newUserName, paypwd: req.body.newPayPwd, phone: req.body.newPhone}
+      Models.update(selector, set, (err, data) => {
+        if (err) {
+          obj = {code: 1, error: err}
+        }
+        res.send(obj)
+        res.end()
+      })
+    }
+  })
+})
+
+/* 加入购物车 */
+router.post('/addCart', (req, res, next) => {
+  var id = mongoose.Types.ObjectId(req.body.userId)
+  var selector = {_id: id}
+  var obj = {code: 0}
+  Models.find(selector, (err, data) => {
+    if (err) {
+      obj = {code: 1, error: err}
+      res.send(obj)
+      res.end()
+    } else {
+      if (data[0].collect.length >= 10) {
+        obj = {code: 1, error: '购物车已满'}
+        res.send(obj)
+        res.end()
+      } else if (data[0].collect.includes(req.body.goodsId)) {
+        obj = {code: 1, error: '购物车已存在该商品'}
+        res.send(obj)
+        res.end()
+      } else{
+        data[0].collect.push(req.body.goodsId)
+        var set = {collect: data[0].collect}
+        Models.update(selector, set, (_err, _data) => {
+          if (err) {
+            obj = {code: 1, error: _err}
+          }
+          res.send(obj)
+          res.end()
+        })
+      }
+    }
   })
 })
 

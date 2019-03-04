@@ -5,6 +5,7 @@ mongoose.connect('mongodb://localhost:27017/myMall')
  
 const db = mongoose.connection
 const model = mongoose.Schema({
+  _id: Object,
   name: String,
   pwd: String,
   phone: String,
@@ -15,23 +16,22 @@ const Models = mongoose.model('sellers', model)
 /* 用户登录 */
 router.post('/login', (req, res, next) => {
   var selector = {name : req.body.name}
+  var obj = {code: 0}
   Models.find(selector, (err, data) => {
     if (err) {
-      res.send("Error:" + err)
+      obj = {code: 1, error: err}
     } else {
       if (data[0]) {
         if (data[0].pwd === req.body.pwd) {
-          let obj = {code: 0, phone: data[0].phone, income: data[0].income}
-          res.send(obj)
+          obj = {code: 0, data: data[0]}
         } else {
-          let obj = {code:1, err: '账号或密码错误'}
-          res.send(obj)
+          obj = {code:1, error: '账号或密码错误'}
         }
       } else {
-        let obj = {code:2, err: '该账户没注册，清前去注册'}
-        res.send(obj)
+        let obj = {code:2, error: '该账户没注册，清前去注册'}
       }
     }
+    res.send(obj)
     res.end()
   })
 })
@@ -61,6 +61,22 @@ router.post('/reg', (req, res, next) => {
       res.send(obj)
       res.end()
     }
+  })
+})
+
+/* 用户信息 */
+router.post('/myInfo', (req, res, next) => {
+  var id = mongoose.Types.ObjectId(req.body.sellerId)
+  var selector = {_id : id}
+  var obj = {code: 0}
+  Models.find(selector, (err, data) => {
+    if (err) {
+      obj = {code: 1, error: err}
+    } else {
+      obj = {code: 0, data: data[0]}
+    }
+    res.send(obj)
+    res.end()
   })
 })
 
