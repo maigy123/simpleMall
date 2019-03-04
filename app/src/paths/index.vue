@@ -1,5 +1,6 @@
 <template lang="pug">
   .index
+    Error(v-if="isErr" :text="errText")
     .searchDiv
       Search
     .menuDiv
@@ -11,11 +12,11 @@
       li(v-for="(item, index) in data" :key="index")
         List(:data="item" :index="index" v-on:toDetail="toDetail")
     .selectPath
-      span.lastOrNextPath 上一页
+      span.lastOrNextPath(@click="toLastOrNextPath(0)") 上一页
       li(v-for="(item, index) in allPaths" :key="index")
         span(@click="toPath(item)") {{ item }}
-      span.lastOrNextPath 下一页
-    Detail(v-if="openDetail !== ''" :data="data[openDetail]" v-on:outDetail="outDetail")
+      span.lastOrNextPath(@click="toLastOrNextPath(1)") 下一页
+    Detail(v-if="openDetail !== ''" :data="data[openDetail]" v-on:outDetail="outDetail" v-on:haveErr="haveErr")
 </template>
 
 <script>
@@ -24,19 +25,22 @@ import Slider from '@/components/index/slidershow.vue'
 import Menu from '@/components/index/menu.vue'
 import List from '@/components/index/goodList.vue'
 import Detail from '@/components/index/goodDetail.vue'
+import Error from '@/components/error.vue'
 export default {
   data () {
     return{
       sliderW: 0,
-      path: 0,
+      path: 0,          // 要分页查询数
       data: [],
       isGetData: false,
       openDetail: '',
-      allPaths: [],
-      thisPath: 1,
+      allPaths: [],     // 所有页数
+      thisPath: 1,      // 当前页数
       classed: false,
       sorted: false,
-      params: {}
+      params: {},
+      isErr: false,
+      errText: ''
     }
   },
 
@@ -45,11 +49,12 @@ export default {
     Slider,
     Menu,
     List,
-    Detail
+    Detail,
+    Error
   },
 
   created () {
-    this.getData()
+    // this.getData()
     // this.getPaths()
     this.classSortFind()
   },
@@ -107,6 +112,27 @@ export default {
         this.thisPath = n
       }
     },
+    toLastOrNextPath (n) {
+      if (n === 0) {
+        if (this.thisPath === 1) {
+          this.errText = '已经是最前页'
+          this.errDeal()
+        } else {
+          this.path = (this.thispath - 2) * 10
+          this.classSortFind()
+          this.thisPath--
+        }
+      } else {
+        if (this.thisPath === this.allPaths.length) {
+          this.errText = '已经是最后页'
+          this.errDeal()
+        } else {
+          this.path = (this.thisPath) * 10
+          this.classSortFind()
+          this.thisPath++
+        }
+      }
+    },
     classFind (n) {
       if (n !== 0) {
         this.params.class = n - 1
@@ -139,7 +165,17 @@ export default {
           this.dealPaths(res.data.count)
         }
       })
-    }
+    },
+    haveErr (text) {
+      this.errText = text
+      this.errDeal()
+    },
+    errDeal () {
+      this.isErr = true
+      setTimeout(() => {
+        this.isErr = false
+      }, 2000)
+    } 
   }
 }
 </script>

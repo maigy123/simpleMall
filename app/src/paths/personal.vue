@@ -3,7 +3,7 @@
     .menu
       li(v-for="(item, index) in menus" :key="index" @click="toShowMenu(index)") {{ item }}
     .detail
-      PeronalInfo(v-if="menuSelectded === 1" :userName="userName")
+      PeronalInfo(v-if="menuSelectded === 1")
 </template>
 
 <script>
@@ -11,7 +11,6 @@ import PeronalInfo from '@/components/personal/personalInfo.vue'
 export default {
   data () {
     return {
-      userName: '',
       menus: ['购买记录', '个人信息', '我的收藏', '充值中心'],
       menuSelectded: ''
     }
@@ -21,8 +20,6 @@ export default {
   },
 
   created () {
-    this.userName = this.$cookies.get('userName')
-    console.log(this.userName)
   },
 
   mounted () {
@@ -50,6 +47,7 @@ export default {
     li{
       list-style: none;
       margin-top: 20px;
+      cursor: pointer;
     }
     li:hover{
       color: red;

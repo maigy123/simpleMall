@@ -104,7 +104,7 @@ export default {
       var params = {name: this.name, pwd: this.pwd}
       this.$reqs.post("/users/login", params).then((res) => {
         if (res.data.code === 0) {
-          this.$cookies.set('userName', this.name)
+          sessionStorage.setItem("userId", res.data.userId)
           this.$emit('haveLogin')
         } else {
           this.errText = res.data.error
@@ -115,13 +115,14 @@ export default {
     sellerLogin () {
       var params = {name: this.name, pwd: this.pwd}
       this.$reqs.post("/sellers/login", params).then((res) => {
+        console.log(res.data)
         if (res.data.code === 0) {
-          this.$cookies.set('sellerName', this.name)
-          this.$emit('haveLogin', 1)
-          this.$cookies.set('sellerPhone', res.data.phone)
-          this.$cookies.set('income', res.data.income)
+          sessionStorage.setItem('sellerId', res.data.data._id)
+          this.$emit('haveLogin')
+          sessionStorage.setItem('sellerPhone', res.data.data.phone)
+          sessionStorage.setItem('income', res.data.data.income)
         } else {
-          this.errText = res.data.err
+          this.errText = res.data.error
           this.errDeal()
         }
       })

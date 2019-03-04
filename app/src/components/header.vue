@@ -10,6 +10,10 @@
         span 登录/注册
       router-link(tag="span" to="./")
         span 首页
+      router-link(tag="span" to="./test1")
+        span 测试页1
+      router-link(tag="span" to="./test2")
+        span 测试页2
     .right
       .cars
         span 购物车
@@ -47,7 +51,7 @@ export default {
 
   methods: {
     toPersonal () {
-      if (this.$cookies.get('userName') === null) {
+      if (sessionStorage.getItem("userId") === null) {
         this.errText = '请登录后再进入个人中心'
         this.errDeal()
       } else {
@@ -70,6 +74,10 @@ export default {
   height: 30px;
   font-size: 12px;
   color: #969696;
+
+  span{
+    cursor: pointer;
+  }
 }
 
 .left{

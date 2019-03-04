@@ -13,7 +13,7 @@
         span 品类：{{ this.class }}
         span 销售量：{{data.selledNum }}
         span 售卖状态： {{ this.status }}
-        span 加入购物车
+        span(@click.stop="addToCart") 加入购物车
 </template>
 
 <script>
@@ -55,6 +55,24 @@ export default {
     },
     outDetail () {
       this.$emit('outDetail')
+    },
+    addToCart (e) {
+      var userId = sessionStorage.getItem("userId")
+      if (userId !== null) {
+        var params = {userId: userId, goodsId: this.data._id}
+        this.postReq(params)
+      } else {
+        this.$emit('haveErr', '请先登录')
+      }
+    },
+    postReq (params) {
+      this.$reqs.post('/users/addCart', params).then((res) => {
+        if (res.data.code === 0) {
+          this.$emit('haveErr', '加入购物车成功')
+        } else {
+          this.$emit('haveErr', res.data.error)
+        }
+      })
     }
   }
 }

@@ -7,7 +7,7 @@
       .sellerHeader
         span 当卖家，去赚钱
         span(@click="logout") 退出登录
-        span 用户：{{ sellerName }}
+        // span 用户：{{ sellerName }}
       .sellerBody
         .menu
           li(v-for="(item, index) in menu" :key="index" @click="showDetail(index)") {{ item }}
@@ -42,10 +42,9 @@ export default {
 
   created () {
     this.minHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
-    let sellerName = this.$cookies.get('sellerName')
-    if (sellerName !== null) {
+    let sellerId = sessionStorage.getItem('sellerId')
+    if (sellerId !== null) {
       this.isLogin = !this.isLogin
-      this.sellerName = sellerName
     }
   },
 
@@ -64,7 +63,7 @@ export default {
       this.$refs.sellerDiv.style.minHeight = this.minHeight - 130 + 'px'
     },
     logout () {
-      this.$cookies.remove('sellerName')
+      sessionStorage.removeItem('sellerName')
       this.isLogin = !this.isLogin
       this.$refs.loginDiv.style.minHeight = this.minHeight - 130 + 'px'
     },

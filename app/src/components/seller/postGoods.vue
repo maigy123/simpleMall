@@ -41,7 +41,7 @@ export default {
       price: '',
       imgSrc: '',
       classes: ['衣物', '家具', '饮食', '图书', '化妆品', '电子产品'],
-      sellerName: '',
+      sellerId: '',
       classSelected: '',
       imgNum: 2,
       text: '选择上传',
@@ -55,7 +55,7 @@ export default {
   },
 
   created () {
-    this.sellerName = this.$cookies.get('sellerName')
+    this.sellerId = sessionStorage.getItem('sellerId')
   },
 
   mounted () {
@@ -83,7 +83,7 @@ export default {
         this.errText = '信息不能为空'
         this.exitErr()
       } else {
-        var params = {name: this.goodName, price: this.price, sellerName: this.sellerName, class: this.classSelected, desc: this.desc, imgSrc: this.imgSrc}
+        var params = {name: this.goodName, price: this.price, sellerId: this.sellerId, class: this.classSelected, desc: this.desc, imgSrc: this.imgSrc}
         this.$reqs.post("/goods/postGoods", params).then((res) => {
           if (res.data.code === 0) {
             this.errText = '上线商品成功'
@@ -91,6 +91,7 @@ export default {
             this.price = ''
             this.imgSrc = ''
             this.classSelected = ''
+            this.desc = ''
           } else {
             this.errText = '上线商品失败'
           }

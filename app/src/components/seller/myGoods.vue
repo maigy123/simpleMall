@@ -54,8 +54,8 @@ export default {
       }
     },
     getMyGoods () {
-      var name = this.$cookies.get('sellerName')
-      var params = {sellerName: name}
+      var sellerId = sessionStorage.getItem('sellerId')
+      var params = {sellerId: sellerId}
       this.$reqs.post("/goods/myGoods", params).then((res) => {
         if (res.data.code === 0) {
           this.data = res.data.data

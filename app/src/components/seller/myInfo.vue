@@ -53,20 +53,31 @@ export default {
       oriPhone: '',
       newPhone: '',
       pwd: '',
-      todo: 'none'
+      todo: 'none',
+      income: ''
     }
   },
 
   created () {
-    this.name = this.$cookies.get('sellerName')
-    var phone = this.$cookies.get('sellerPhone')
-    this.phone = phone.substring(0, 3) + '****' + phone.substring(7)
+    this.getMyInfo()
   },
 
   mounted () {
   },
 
   methods: {
+    getMyInfo () {
+      var sellerId = sessionStorage.getItem('sellerId')
+      var params = {sellerId: sellerId}
+      this.$reqs.post('/sellers/myInfo', params).then((res) => {
+        if (res.data.code === 0) {
+          this.name = res.data.data.name
+          var phone = res.data.data.phone
+          this.phone = phone.substring(0, 3) + '****' + phone.substring(7)
+          this.income = res.data.data.income
+        }
+      })
+    },
     toAlterPwd () {
       if (this.todo === 0) {
         this.todo = 'none'
