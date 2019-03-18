@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import Login from '@/components/login.vue'
+import Login from '@/components/public/login.vue'
 export default {
   data () {
     return {

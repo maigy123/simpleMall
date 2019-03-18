@@ -12,7 +12,7 @@
 
 <script>
 import Login from '@/components/manager/login'
-import WaitManager from '@/components/seller/myGoods'
+import WaitManager from '@/components/public/listAndDetail'
 export default {
   data () {
     return {

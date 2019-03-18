@@ -1,9 +1,10 @@
 <template lang="pug">
   .search
+    Error(v-if="errText !== ''" :text="errText")
     .img
       img(src="@/assets/mall.jpg")
     .search-div
-      .button
+      .button(@click="toSearch")
         span 搜 索
       .search-frame
         input.input(type="text" v-model='inputText' placeholder="搜索 商品 / 卖家")
@@ -13,15 +14,18 @@
 </template>
 
 <script>
+import Error from '@/components/public/error'
 export default {
   props: ['text'],
   data () {
     return{
       inputText: '',
-      tips: ['饮食', '图书', '电子产品']
+      tips: ['饮食', '图书', '电子产品'],
+      errText: ''
     }
   },
   components: {
+    Error
   },
 
   created () {
@@ -31,6 +35,20 @@ export default {
   },
 
   methods: {
+    toSearch () {
+      if (this.inputText === '') {
+        this.errDeal('请输入搜索内容')
+      } else {
+        this.$emit('search', this.inputText)
+      }
+    },
+
+    errDeal (text) {
+      this.errText = text
+      setTimeout(() => {
+        this.errText = ''
+      }, 2000)
+    }
   }
 }
 </script>
@@ -63,6 +81,7 @@ export default {
       height: 40px;
       margin-top: 40px;
       color: white;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;

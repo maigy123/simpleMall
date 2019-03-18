@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import Error from '@/components/error.vue'
+import Error from '@/components/public/error.vue'
 export default {
   data () {
     return{

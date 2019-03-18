@@ -3,20 +3,21 @@
     .login
       .tips
         span 管理员登录
-      .name
-        img(src="@/assets/account.png")
-        input(type="text" v-model="name" placeholder="请输入账号")
-      .pwd
-        img(src="@/assets/pwd.png")
-        input(type="password" v-model="pwd" placeholder="请输入密码")
-      .button(@click="toLogin")
-        span 登录
-      .error(v-if="isErr")
-        Error(:text="errText")
+      from(@keyup.enter="toLogin")
+        .name
+          img(src="@/assets/account.png")
+          input(type="text" v-model="name" placeholder="请输入账号")
+        .pwd
+          img(src="@/assets/pwd.png")
+          input(type="password" v-model="pwd" placeholder="请输入密码")
+        .button(@click="toLogin")
+          span 登录
+        .error(v-if="isErr")
+          Error(:text="errText")
 </template>
 
 <script>
-import Error from '@/components/error.vue'
+import Error from '@/components/public/error.vue'
 export default {
   props: ['height'],
   data () {

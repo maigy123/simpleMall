@@ -2,7 +2,7 @@
   .index
     Error(v-if="isErr" :text="errText")
     .searchDiv
-      Search
+      Search(v-on:search="search")
     .menuDiv
       .menu
         Menu(v-on:classFind="classFind" v-on:sortFind="sortFind")
@@ -25,7 +25,8 @@ import Slider from '@/components/index/slidershow.vue'
 import Menu from '@/components/index/menu.vue'
 import List from '@/components/index/goodList.vue'
 import Detail from '@/components/index/goodDetail.vue'
-import Error from '@/components/error.vue'
+import Error from '@/components/public/error.vue'
+import { getCartNumber } from '@/publicFn/tools'
 export default {
   data () {
     return{
@@ -40,7 +41,8 @@ export default {
       sorted: false,
       params: {},
       isErr: false,
-      errText: ''
+      errText: '',
+      searchText: ''
     }
   },
 
@@ -55,7 +57,7 @@ export default {
 
   created () {
     // this.getData()
-    // this.getPaths()
+    getCartNumber(this.$reqs, this.$store)
     this.classSortFind()
   },
 
@@ -140,6 +142,7 @@ export default {
         // this.params.class = {}
         delete this.params.class
       }
+      this.searchText = ''
       this.classSortFind()
     },
     sortFind (n) {
@@ -158,6 +161,7 @@ export default {
     },
     classSortFind () {
       this.params.path = this.path
+      this.params.searchText = this.searchText
       this.$reqs.post('goods/classSortFind', this.params).then((res) => {
         console.log(res.data)
         if (res.data.code === 0) {
@@ -165,6 +169,10 @@ export default {
           this.dealPaths(res.data.count)
         }
       })
+    },
+    search (searchText) {
+      this.searchText = searchText
+      this.classSortFind()
     },
     haveErr (text) {
       this.errText = text
@@ -175,7 +183,7 @@ export default {
       setTimeout(() => {
         this.isErr = false
       }, 2000)
-    } 
+    }
   }
 }
 </script>
@@ -224,6 +232,7 @@ export default {
     text-align: center;
     span{
       line-height: 40px;
+      cursor: pointer;
     }
     span:hover{
       color: red;

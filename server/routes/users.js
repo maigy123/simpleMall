@@ -140,8 +140,8 @@ router.post('/alterOthers', (req, res, next) => {
   })
 })
 
-/* 加入购物车 */
-router.post('/addCart', (req, res, next) => {
+/* 商品收藏 */
+router.post('/addCollect', (req, res, next) => {
   var id = mongoose.Types.ObjectId(req.body.userId)
   var selector = {_id: id}
   var obj = {code: 0}
@@ -152,11 +152,11 @@ router.post('/addCart', (req, res, next) => {
       res.end()
     } else {
       if (data[0].collect.length >= 10) {
-        obj = {code: 1, error: '购物车已满'}
+        obj = {code: 1, error: '收藏仓库已满'}
         res.send(obj)
         res.end()
       } else if (data[0].collect.includes(req.body.goodsId)) {
-        obj = {code: 1, error: '购物车已存在该商品'}
+        obj = {code: 1, error: '收藏仓库已存在该商品'}
         res.send(obj)
         res.end()
       } else{
@@ -170,6 +170,28 @@ router.post('/addCart', (req, res, next) => {
           res.end()
         })
       }
+    }
+  })
+})
+
+/* 充值 */
+router.post('/recharge', (req, res, next) => {
+  var selector = {_id: mongoose.Types.ObjectId(req.body.userId)}
+  var obj = {code: 0}
+  Models.find(selector, (err, data) => {
+    if (err) {
+      obj = {code: 1, error: err}
+      res.send(obj)
+      res.end()
+    } else {
+      var set = {balance: req.body.sum + data[0].balance}
+      Models.update(selector, set, (_err, _data) => {
+        if (_err) {
+          obj = {code: 1, error: err}
+        }
+        res.send(obj)
+        res.end()
+      })
     }
   })
 })
@@ -192,4 +214,7 @@ function findFirst (req, res, cb) {
   })
 }
 
-module.exports = router
+module.exports = {
+  router: router,
+  model: Models
+}

@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import Login from '@/components/login.vue'
-import MyGoods from '@/components/seller/myGoods.vue'
+import Login from '@/components/public/login.vue'
+import MyGoods from '@/components/public/listAndDetail.vue'
 import PostGoods from '@/components/seller/postGoods.vue'
 import MyInfo from '@/components/seller/myInfo.vue'
 export default {
@@ -30,7 +30,7 @@ export default {
       sellerName: '',
       menu:  ['我的商品', '上线商品', '个人信息'],
       detailX: 'none',
-      type: "seller"
+      type: "myGoods"
     }
   },
   components: {

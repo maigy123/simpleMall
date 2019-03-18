@@ -10,6 +10,8 @@ var usersRouter = require('./routes/users');
 var sellersRouter = require('./routes/sellers');
 var goodsRouter = require('./routes/goods');
 var managersRouter = require('./routes/managers');
+var cartsRouter = require('./routes/carts');
+var mixRouter = require('./routes/mixTable');
 var app = express();
 
 //跨域  后期删
@@ -46,10 +48,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 /* app.use(bodyParser.json({limit: '1000mb'}));
 app.use(bodyParser.urlencoded({limit: '1000mb', extended: true})); */
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/users', usersRouter.router);
 app.use('/sellers', sellersRouter);
-app.use('/goods', goodsRouter);
+app.use('/goods', goodsRouter.router);
 app.use('/managers', managersRouter);
+app.use('/carts', cartsRouter);
+app.use('/mix', mixRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

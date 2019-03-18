@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import Error from '@/components/error.vue'
+import Error from '@/components/public/error.vue'
 export default {
   data () {
     return{
@@ -68,7 +68,6 @@ export default {
     getMyInfo () {
       var params = {userId: this.userId}
       this.$reqs.post('/users/myInfo', params).then((res) => {
-        console.log(res.data)
         if (res.data.code === 0) {
           this.setMyInfo(res.data.data[0])
         }
@@ -125,7 +124,6 @@ export default {
       params.newUserName = this.newUserName? this.newUserName: this.myOrinData.userName
       params.newPayPwd = this.newPayPwd? this.newPayPwd: this.myOrinData.payPwd
       params.newPhone = this.newPhone? this.newPhone: this.myOrinData.phone
-      console.log(params)
       this.$reqs.post('users/alterOthers', params).then((res) => {
         console.log(res.data)
       })

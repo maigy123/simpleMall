@@ -1,53 +1,54 @@
 <template lang="pug">
   .detail
-    .name
-      span {{ data.name }}
-    .img
-      img(:src="data.imgSrc")
-    .alterImg
-      span(@click="getImg") 点击更换照片
-      input.input(type="file" ref="getImg" @change="processFile")
-      span(@click="alterImg") 确认更换照片
-    .attrs
-      .lists
-        span 购买次数： {{ data.selledNum }}
-        br
-        span 价格： {{ data.price }}
-        br
-        span 品类： {{ this.class }}
-        br
-        span 是否下架： {{ this.status }}
-        br
-        span 商品描述：{{ data.desc}}
-      .operations
-        li(v-for="(item, index) in operations" :key="index")
-          span(@click="alter(index)") {{item}}
-    .alter-area(v-if="toAlter")
-      .left
-        span 商品新名称：
-        span 商品新价格：
-        span 商品新品类：
-        span 商品新描述：
-      .right
-        input(type="text" v-model="newName" placeholder="请输入商品名称")
-        input(type="number" v-model="newPrice" placeholder="请输入商品价格")
-        .class
-          li(v-for="(item, index) in classes" :key="index" @click="chooseCalss(index)")
-            .classTip(:class="{active: newClass === index}")
-            .text
-              span {{ item }}
-        .desc
-          textarea(v-model="newDesc")
-        .alterGood
-          span(@click="alterGood") 修改商品
-    .putOff(v-if="toPutOff")
-      span(@click="puton") 上架商品
-      span(@click="putoff") 下架商品
+    .goodsDetailDiv(:style="{height: height - 50 + 'px'}")
+      .name
+        span {{ data.name }}
+      .img
+        img(:src="data.imgSrc")
+      .alterImg
+        span(@click="getImg") 点击更换照片
+        input.input(type="file" ref="getImg" @change="processFile")
+        span(@click="alterImg") 确认更换照片
+      .attrs
+        .lists
+          span 购买次数： {{ data.selledNum }}
+          br
+          span 价格： {{ data.price }}
+          br
+          span 品类： {{ this.class }}
+          br
+          span 是否下架： {{ this.status }}
+          br
+          span 商品描述：{{ data.desc}}
+        .operations
+          li(v-for="(item, index) in operations" :key="index")
+            span(@click="alter(index)") {{item}}
+      .alter-area(v-if="toAlter")
+        .left
+          span 商品新名称：
+          span 商品新价格：
+          span 商品新品类：
+          span 商品新描述：
+        .right
+          input(type="text" v-model="newName" placeholder="请输入商品名称")
+          input(type="number" v-model="newPrice" placeholder="请输入商品价格")
+          .class
+            li(v-for="(item, index) in classes" :key="index" @click="chooseCalss(index)")
+              .classTip(:class="{active: newClass === index}")
+              .text
+                span {{ item }}
+          .desc
+            textarea(v-model="newDesc")
+          .alterGood
+            span(@click="alterGood") 修改商品
+      .putOff(v-if="toPutOff")
+        span(@click="puton") 上架商品
+        span(@click="putoff") 下架商品
 </template>
 
 <script>
 export default {
-  props: ['data'],
+  props: ['data', 'height'],
   data () {
     return{
       classes: ['衣物', '家具', '饮食', '图书', '化妆品', '电子产品'],
@@ -189,156 +190,160 @@ export default {
 .detail{
   width: 100%;
 
-  .name{
-    padding-top: 30px;
-    width: 100%;
-    text-align: center;
-    font-size: 20px;
-    font-weight: 600;
-  }
+  .goodsDetailDiv{
+    overflow-y: auto;
+    border: 1px solid;
+    .name{
+      padding-top: 30px;
+      width: 100%;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 600;
+    }
 
-  .img{
-    width: 100%;
-    margin-top: 30px;
-    text-align: center;
-    img{
-      width: 80%;
-      height: auto;
-    }
-  }
-
-  .alterImg{
-    margin: 10px 0 0 50px;
-    .input{
-      display: none;
-    }
-    span{
-      text-decoration: underline;
-      color: red;
-    }
-    span:hover{
-      color: #EEEE00;
-    }
-    span:nth-child(3){
-      margin-left: 50px;
-    }
-  }
-
-  .attrs{
-    margin-top: 30px;
-    padding: 0 0 20px 50px;
-    display: flex;
-
-    .lists{
-      flex: 1;
-      padding-right: 10px;
-    }
-    .operations{
-      flex: 1;
-      li{
-        span{
-          margin-right: 20px;
-          text-decoration: underline;
-          color: red;
-        }
+    .img{
+      width: 100%;
+      margin-top: 30px;
+      text-align: center;
+      img{
+        width: 80%;
+        height: auto;
       }
     }
-  }
 
-  .alter-area{
-    margin: 30px 0 0 50px;
-    padding-top: 20px;
-    display: flex;
-    border-top: 1px #e5e5e5 solid;
-    .left{
-      width: 300px;
+    .alterImg{
+      margin: 10px 0 0 50px;
+      .input{
+        display: none;
+      }
       span{
-        display: block;
-        margin: 5px 0 0 100px;
-        line-height: 40px;
-        font-size: 16px;
+        text-decoration: underline;
+        color: red;
       }
-      span:nth-child(4){
-        margin: 45px 0 0 100px;
+      span:hover{
+        color: #EEEE00;
+      }
+      span:nth-child(3){
+        margin-left: 50px;
       }
     }
-    .right{
-      flex: 1;
-      input{
-        display: block;
-        width: 200px;
-        height: 40px;
-        border: none;
-        outline: none;
-        border-bottom: 1px solid;
+
+    .attrs{
+      margin-top: 30px;
+      padding: 0 0 20px 50px;
+      display: flex;
+
+      .lists{
+        flex: 1;
+        padding-right: 10px;
       }
-      .class{
-        padding-top: 10px;
+      .operations{
+        flex: 1;
         li{
-          display: inline-block;
-          margin-right: 20px;
-          .classTip{
-            float: left;
-            width: 16px;
-            height: 16px;
-            margin-top: 10px;
-            border-radius: 50%;
-            background: white;
-            border: 1px solid;
-
-            &.active{
-              background: #76EE00;
-            }
-          }
-          .text{
-            float: right;
-            margin-left: 10px;
-            span{
-              line-height: 40px;
-              font-size: 16px;
-            }
+          span{
+            margin-right: 20px;
+            text-decoration: underline;
+            color: red;
           }
         }
       }
-      .desc{
-        width: 100%;
-        textarea{
-          width: 80%;
-        }
-      }
-      .alterGood{
-        height: 50px;
-        margin: 50px 0 0 50px;
+    }
 
+    .alter-area{
+      margin: 30px 0 0 50px;
+      padding-top: 20px;
+      display: flex;
+      border-top: 1px #e5e5e5 solid;
+      .left{
+        width: 300px;
         span{
-          padding: 10px 20px;
-          background: #EEB422;
-          border-radius: 10px;
-          color: white;
+          display: block;
+          margin: 5px 0 0 100px;
+          line-height: 40px;
+          font-size: 16px;
         }
-        span:hover{
-          background: #EE4000;
+        span:nth-child(4){
+          margin: 45px 0 0 100px;
+        }
+      }
+      .right{
+        flex: 1;
+        input{
+          display: block;
+          width: 200px;
+          height: 40px;
+          border: none;
+          outline: none;
+          border-bottom: 1px solid;
+        }
+        .class{
+          padding-top: 10px;
+          li{
+            display: inline-block;
+            margin-right: 20px;
+            .classTip{
+              float: left;
+              width: 16px;
+              height: 16px;
+              margin-top: 10px;
+              border-radius: 50%;
+              background: white;
+              border: 1px solid;
+
+              &.active{
+                background: #76EE00;
+              }
+            }
+            .text{
+              float: right;
+              margin-left: 10px;
+              span{
+                line-height: 40px;
+                font-size: 16px;
+              }
+            }
+          }
+        }
+        .desc{
+          width: 100%;
+          textarea{
+            width: 80%;
+          }
+        }
+        .alterGood{
+          height: 50px;
+          margin: 50px 0 0 50px;
+
+          span{
+            padding: 10px 20px;
+            background: #EEB422;
+            border-radius: 10px;
+            color: white;
+          }
+          span:hover{
+            background: #EE4000;
+          }
         }
       }
     }
-  }
 
-  .putOff{
-    margin: 30px 0 0 50px;
-    padding-top: 30px;
-    height: 70px;
-    position: relative;
-    border-top: 1px #e5e5e5 solid;
+    .putOff{
+      margin: 30px 0 0 50px;
+      padding-top: 30px;
+      height: 70px;
+      position: relative;
+      border-top: 1px #e5e5e5 solid;
 
-    span{
-      padding: 10px 20px;
-      background: #EEB422;
-      border-radius: 10px;
-      color: white;
-    }
-    span:nth-child(2){
-      position: absolute;
-      right: 50px;
+      span{
+        padding: 10px 20px;
+        background: #EEB422;
+        border-radius: 10px;
+        color: white;
+      }
+      span:nth-child(2){
+        position: absolute;
+        right: 50px;
+      }
     }
   }
 }

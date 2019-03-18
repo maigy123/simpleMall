@@ -13,10 +13,12 @@
         span 品类：{{ this.class }}
         span 销售量：{{data.selledNum }}
         span 售卖状态： {{ this.status }}
-        span(@click.stop="addToCart") 加入购物车
+        span(@click.stop="check(0)") 收藏商品
+        span(@click.stop="check(1)") 加入购物车
 </template>
 
 <script>
+import { getCartNumber } from '@/publicFn/tools'
 export default {
   props: ['data'],
   data () {
@@ -56,19 +58,34 @@ export default {
     outDetail () {
       this.$emit('outDetail')
     },
-    addToCart (e) {
+    check (n) {
       var userId = sessionStorage.getItem("userId")
       if (userId !== null) {
         var params = {userId: userId, goodsId: this.data._id}
-        this.postReq(params)
+        if (n === 0) {
+          this.addCollect(params)
+        } else {
+          this.addCart(params)
+        }
       } else {
         this.$emit('haveErr', '请先登录')
       }
     },
-    postReq (params) {
-      this.$reqs.post('/users/addCart', params).then((res) => {
+    addCollect (params) {
+      this.$reqs.post('/users/addCollect', params).then((res) => {
+        if (res.data.code === 0) {
+          this.$emit('haveErr', '收藏成功')
+        } else {
+          this.$emit('haveErr', res.data.error)
+        }
+      })
+    },
+    addCart (params) {
+      params.number = 1
+      this.$reqs.post('/carts/addCart', params).then((res) => {
         if (res.data.code === 0) {
           this.$emit('haveErr', '加入购物车成功')
+          getCartNumber(this.$reqs, this.$store)
         } else {
           this.$emit('haveErr', res.data.error)
         }
@@ -138,11 +155,22 @@ export default {
         line-height: 30px;
       }
       span:nth-child(5){
+        margin-top: 20px;
+        width: 70px;
+        color: white;
+        padding: 5px 20px;
+        border-radius: 10px;
+        background: #EEB422;
+        cursor: pointer;
+      }
+      span:nth-child(6){
+        margin-top: 20px;
         width: 80px;
         color: white;
         padding: 5px 20px;
         border-radius: 10px;
         background: #EEB422;
+        cursor: pointer;
       }
     }
   }

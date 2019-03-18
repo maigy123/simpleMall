@@ -80,6 +80,7 @@ export default {
         span{
           font-size: 16px;
           line-height: 40px;
+          cursor: pointer;
           &.active{
             color: #EE3B3B;
           }

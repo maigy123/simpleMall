@@ -5,6 +5,7 @@ mongoose.connect('mongodb://localhost:27017/myMall')
 
 const db = mongoose.connection
 const model = mongoose.Schema({
+  _id: Object,
   name: String,
   price: Number,
   sellerId: String,
@@ -142,6 +143,9 @@ router.post('/getPath', (req, res, next) => {
 /* 分类排序查询 */
 router.post('/classSortFind', (req, res, next) => {
   var selector = (req.body.class || req.body.class === 0)? {'class': req.body.class}: {}
+  if (req.body.searchText !== '') {
+    selector.name = new RegExp(req.body.searchText)
+  }
   selector.examine = 1
   selector.status = 0
   var sorted = (req.body.sort|| req.body.sort === 0)? req.body.sort: {}
@@ -149,19 +153,13 @@ router.post('/classSortFind', (req, res, next) => {
   var obj = {code: 0}
   Models.count(selector, (err, data) => {
     if (err) {
-      obj.code = 1
-      obj.err = err
-      res.send(obj)
-      res.end()
+      errDeal(err, res)
     } else {
       if (data !== 0) {
         obj.count = data
         Models.find(selector, (err, data2) => {
           if (err) {
-            obj.code = 1
-            obj.err = err
-            res.send(obj)
-            res.end()
+            errDeal(err, res)
           } else {
             obj.data = data2
             res.send(obj)
@@ -204,6 +202,13 @@ router.post('/examineGoods', (req, res, next) => {
   })
 })
 
+function errDeal (err, res) {
+  var obj = {code: 1, error: err}
+  res.send(obj)
+  res.end()
+}
 
-
-module.exports = router
+module.exports = {
+  router: router,
+  model: Models
+}

@@ -1,6 +1,6 @@
 <template lang="pug">
   .header
-    Error(v-if="isErr" :text="errText")
+    Error(v-if="errText !== ''" :text="errText")
     .left
       span 嗨，欢迎来到xxx
       // span 请登录
@@ -15,25 +15,23 @@
       router-link(tag="span" to="./test2")
         span 测试页2
     .right
-      .cars
+      .cars(@click="checkLog('cart')")
         span 购物车
         span {{ carsNum }}
         span 件
       .seller
         router-link(tag="span" to="./seller")
           span 当卖家
-      .personal(@click="toPersonal")
+      .personal(@click="checkLog('personal')")
         span 个人中心
 </template>
 
 <script>
-import Error from '@/components/error.vue'
+import Error from '@/components/public/error.vue'
 export default {
   data () {
     return{
-      carsNum: 0,
       type: 'user',
-      isErr: false,
       errText: ''
     }
   },
@@ -42,26 +40,41 @@ export default {
     Error
   },
 
+  computed: {
+    carsNum () {
+      if (this.$store.state.cartNum === undefined) {
+        return ' ' + 0 + ' '
+      } else {
+        return ' ' + this.$store.state.cartNum + ' '
+      }
+    }
+  },
+
   created () {
-    this.carsNum = ' ' + this.$store.state.carsNum + ' '
   },
 
   mounted () {
   },
 
   methods: {
-    toPersonal () {
+    checkLog (type) {
       if (sessionStorage.getItem("userId") === null) {
-        this.errText = '请登录后再进入个人中心'
-        this.errDeal()
+        this.errDeal('请登录后再进入个人中心')
+      } else if (type === 'cart') {
+        this.$router.push({name: 'cart'})
       } else {
         this.$router.push({name: 'personal'})
       }
     },
-    errDeal () {
-      this.isErr = true
+
+    toCart () {
+      
+    },
+
+    errDeal (text) {
+      this.errText = text
       setTimeout(() => {
-        this.isErr = false
+        this.errText = ''
       }, 2000)
     }
   }

@@ -4,13 +4,14 @@
       img(:src="data.imgSrc")
     .contence
       span {{ data.name }}
-      span 已购买：{{ data.selledNum }}
+      span 销量：{{ data.selledNum }}
       span ￥{{ data.price }}
+      span(v-if="type === 'payRecord'") 曾购买{{data.number}}
   </template>
 
 <script>
 export default {
-  props: ['data', 'index'],
+  props: ['data', 'index', 'type'],
   data () {
     return{
     }

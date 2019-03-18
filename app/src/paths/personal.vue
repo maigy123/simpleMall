@@ -4,19 +4,26 @@
       li(v-for="(item, index) in menus" :key="index" @click="toShowMenu(index)") {{ item }}
     .detail
       PeronalInfo(v-if="menuSelectded === 1")
+      Recharge(v-else-if="menuSelectded === 3")
+      myCollect(v-else :type="type")
 </template>
 
 <script>
 import PeronalInfo from '@/components/personal/personalInfo.vue'
+import Recharge from '@/components/personal/recharge.vue'
+import myCollect from '@/components/public/listAndDetail.vue'
 export default {
   data () {
     return {
       menus: ['购买记录', '个人信息', '我的收藏', '充值中心'],
-      menuSelectded: ''
+      menuSelectded: 1,
+      type: 'myCollect'
     }
   },
   components: {
-    PeronalInfo
+    PeronalInfo,
+    Recharge,
+    myCollect
   },
 
   created () {
@@ -29,6 +36,11 @@ export default {
 
   methods: {
     toShowMenu (n) {
+      if (n === 0) {
+        this.type = 'payRecord'
+      } else if (n === 2) {
+        this.type = 'myCollect'
+      }
       this.menuSelectded = n
     } 
   }
@@ -43,6 +55,7 @@ export default {
     width: 300px;
     text-align: center;
     padding-top: 50px;
+    border-right: 1px #e5e5e5 solid;
 
     li{
       list-style: none;

@@ -3,20 +3,21 @@
     Error(v-if="isErr" :text="errText")
     .tips
       span 登录/注册
-    .name
-      img(src="@/assets/account.png")
-      input(type="text" v-model="name" placeholder="请输入账号")
-    .pwd
-      img(src="@/assets/pwd.png")
-      input(type="password" v-model="pwd" placeholder="请输入密码")
-    .pwd(v-if="(type === 'user') && (goReg)")
-      img(src="@/assets/pwd.png")
-      input(type="password" v-model="payPwd" placeholder="请输入六位支付密码（仅限数字）")
-    .phone(v-if="goReg")
-      img(src="@/assets/phone.png")
-      input(type="number" v-model="phone" placeholder="请输入手机号")
-    .button(@click="toSure")
-      span {{ btnText }}
+    form(@keyup.enter="toSure")
+      .name
+        img(src="@/assets/account.png")
+        input(type="text" v-model="name" placeholder="请输入账号")
+      .pwd
+        img(src="@/assets/pwd.png")
+        input(type="password" v-model="pwd" placeholder="请输入密码")
+      .pwd(v-if="(type === 'user') && (goReg)")
+        img(src="@/assets/pwd.png")
+        input(type="password" v-model="payPwd" placeholder="请输入六位支付密码（仅限数字）")
+      .phone(v-if="goReg")
+        img(src="@/assets/phone.png")
+        input(type="number" v-model="phone" placeholder="请输入手机号")
+      .button(@click="toSure")
+        span {{ btnText }}
     .select
       span 忘记密码
       span(@click="toReg") 去注册
@@ -24,7 +25,7 @@
 </template>
 
 <script>
-import Error from '@/components/error.vue'
+import Error from '@/components/public/error.vue'
 export default {
   props: ['type'],
   data () {
@@ -106,6 +107,7 @@ export default {
         if (res.data.code === 0) {
           sessionStorage.setItem("userId", res.data.userId)
           this.$emit('haveLogin')
+          this.getCartNum(res.data.userId)
         } else {
           this.errText = res.data.error
           this.errDeal()
@@ -143,6 +145,14 @@ export default {
         this.errText = '请填写正确的支付密码'
         this.errDeal()
       }
+    },
+    getCartNum (userId) {
+      var params = {userId: userId}
+      this.$reqs.post("/carts/cartNum", params).then((res) => {
+        if (res.data.code === 0) {
+          this.$store.commit('alterCart', res.data.data)
+        }
+      })
     }
   }
 }
