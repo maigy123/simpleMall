@@ -22,8 +22,8 @@ export default {
     this.minHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
   },
   mounted () {
-    this.$refs.user.style.minHeight = this.minHeight - 130 + 'px'
-    this.$refs.loginDiv.style.minHeight = this.minHeight - 130 + 'px'
+    this.$refs.user.style.minHeight = this.minHeight - 60 + 'px'
+    this.$refs.loginDiv.style.minHeight = this.minHeight - 60 + 'px'
   },
 
   methods: {
@@ -37,6 +37,9 @@ export default {
 <style lang="less">
 .userPath{
   width: 100%;
+  background: url("./../assets/loginBackImg.jpg") no-repeat;
+  overflow: hidden;
+  background-size:cover;
   .loginDiv{
     width: 100%;
     display: flex;
@@ -47,7 +50,7 @@ export default {
       height: 400px;
       width: 400px;
       margin-right: 200px;
-      border: 1px solid;
+      // border: 1px solid;
     }
   }
 }

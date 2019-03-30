@@ -192,7 +192,7 @@ export default {
 
   .goodsDetailDiv{
     overflow-y: auto;
-    border: 1px solid;
+    border-left: 1px #e5e5e5 solid;
     .name{
       padding-top: 30px;
       width: 100%;

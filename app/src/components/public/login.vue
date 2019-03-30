@@ -10,7 +10,7 @@
       .pwd
         img(src="@/assets/pwd.png")
         input(type="password" v-model="pwd" placeholder="请输入密码")
-      .pwd(v-if="(type === 'user') && (goReg)")
+      .pwd(v-if="goReg && (type === 'user')")
         img(src="@/assets/pwd.png")
         input(type="password" v-model="payPwd" placeholder="请输入六位支付密码（仅限数字）")
       .phone(v-if="goReg")
@@ -26,6 +26,7 @@
 
 <script>
 import Error from '@/components/public/error.vue'
+import { getAES } from '@/publicFn/tools'
 export default {
   props: ['type'],
   data () {
@@ -52,12 +53,16 @@ export default {
 
   methods: {
     toReg () {
-      this.goReg = true
-      this.btnText = '注 册'
+      if (!this.goReg) {
+        this.goReg = true
+        this.btnText = '注 册'
+      }
     },
     toLogin () {
-      this.toReg = false
-      this.btnText = '登 录'
+      if (this.goReg) {
+        this.goReg = false
+        this.btnText = '登 录'
+      }
     },
     toSure () {
       if (this.name === '' || this.pwd === '') {
@@ -102,7 +107,7 @@ export default {
       }, 2000)
     },
     userLogin () {
-      var params = {name: this.name, pwd: this.pwd}
+      var params = {name: this.name, pwd: getAES(this.pwd)}
       this.$reqs.post("/users/login", params).then((res) => {
         if (res.data.code === 0) {
           sessionStorage.setItem("userId", res.data.userId)
@@ -115,9 +120,8 @@ export default {
       })
     },
     sellerLogin () {
-      var params = {name: this.name, pwd: this.pwd}
+      var params = {name: this.name, pwd: getAES(this.pwd)}
       this.$reqs.post("/sellers/login", params).then((res) => {
-        console.log(res.data)
         if (res.data.code === 0) {
           sessionStorage.setItem('sellerId', res.data.data._id)
           this.$emit('haveLogin')
@@ -162,6 +166,8 @@ export default {
 .login{
   width: 400px;
   height: 400px;
+  background: #fff;
+  opacity: 0.9;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -206,6 +212,7 @@ export default {
       line-height: 30px;
       font-size: 12px;
       color: #969696;
+      cursor: pointer;
     }
   }
 

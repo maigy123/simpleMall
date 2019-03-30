@@ -93,6 +93,7 @@ export default {
             this.classSelected = ''
             this.desc = ''
           } else {
+            console.log(res.data)
             this.errText = '上线商品失败'
           }
           this.exitErr()

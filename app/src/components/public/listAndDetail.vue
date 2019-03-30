@@ -57,7 +57,7 @@ export default {
   },
 
   mounted () {
-    this.$refs.lists.style.height = this.height - 50 + 'px'
+      this.$refs.lists.style.height = this.height - 50 + 'px'
   },
 
   methods: {

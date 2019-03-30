@@ -4,10 +4,7 @@
     .searchDiv
       Search(v-on:search="search")
     .menuDiv
-      .menu
-        Menu(v-on:classFind="classFind" v-on:sortFind="sortFind")
-      .slider(ref="slider")
-        Slider(v-if="sliderW !== 0" :width="sliderW")
+      Menu(v-on:classFind="classFind" v-on:sortFind="sortFind")
     .listsDiv
       li(v-for="(item, index) in data" :key="index")
         List(:data="item" :index="index" v-on:toDetail="toDetail")
@@ -21,7 +18,6 @@
 
 <script>
 import Search from '@/components/index/search.vue'
-import Slider from '@/components/index/slidershow.vue'
 import Menu from '@/components/index/menu.vue'
 import List from '@/components/index/goodList.vue'
 import Detail from '@/components/index/goodDetail.vue'
@@ -30,7 +26,6 @@ import { getCartNumber } from '@/publicFn/tools'
 export default {
   data () {
     return{
-      sliderW: 0,
       path: 0,          // 要分页查询数
       data: [],
       isGetData: false,
@@ -48,7 +43,6 @@ export default {
 
   components: {
     Search,
-    Slider,
     Menu,
     List,
     Detail,
@@ -62,8 +56,6 @@ export default {
   },
 
   mounted () {
-    this.sliderW = this.$refs.slider.clientWidth
-    this.$refs.slider.style.height = this.sliderW * 500 / 1180 + 'px'
   },
 
   methods: {
@@ -136,6 +128,8 @@ export default {
       }
     },
     classFind (n) {
+      this.thisPath = 1
+      this.path = 0
       if (n !== 0) {
         this.params.class = n - 1
       } else {
@@ -146,6 +140,8 @@ export default {
       this.classSortFind()
     },
     sortFind (n) {
+      this.thisPath = 1
+      this.path = 0
       if (n === 0) {
         delete this.params.sort
       } else if (n === 1) {
@@ -191,6 +187,7 @@ export default {
 <style scoped lang="less">
 .index{
   color: #2c3e50;
+  background: #F5F5F5;
 
   .searchDiv{
     width: 100%;
@@ -198,24 +195,14 @@ export default {
   }
 
   .menuDiv{
-    width: 100%;
-    display: flex;
-    .slider{
-      flex: 1;
-    }
-    .menu{
-      flex: 1;
-      background: #F2F2F2;
-      display: flex;
-      align-items: center;
-    }
+    width: 1200px;
+    margin: 0 auto;
   }
 
   .listsDiv{
-    width: 100%;
-    padding: 0 20px 30px 50px;
+    width: 1370px;
+    margin: 0 auto;
     overflow: hidden;
-    background: #e5e5e5;
     li{
       display: block;
       float: left;
@@ -223,15 +210,22 @@ export default {
       height: 300px;
       margin: 30px 30px 0 0;
     }
+    li:nth-child(5){
+      margin: 30px 0;
+    }
+    li:nth-child(10){
+      margin: 30px 0;
+    }
   }
 
   .selectPath{
     width: 100%;
     height: 40px;
-    background: #e5e5e5;
+    background: #F5F5F5;
     text-align: center;
     span{
       line-height: 40px;
+      font-weight: 600;
       cursor: pointer;
     }
     span:hover{
@@ -239,7 +233,7 @@ export default {
     }
     .lastOrNextPath{
       padding: 5px 10px;
-      border: 1px #e5e5e5 solid;
+      border: 1px #F8F8FF solid;
     }
     .path{
       margin-right: 10px;

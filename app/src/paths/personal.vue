@@ -1,7 +1,7 @@
 <template lang="pug">
   .personalPath(ref="personal")
     .menu
-      li(v-for="(item, index) in menus" :key="index" @click="toShowMenu(index)") {{ item }}
+      li(v-for="(item, index) in menus" :key="index" @click="toShowMenu(index)" :class="{active: menuSelectded === index}") {{ item }}
     .detail
       PeronalInfo(v-if="menuSelectded === 1")
       Recharge(v-else-if="menuSelectded === 3")
@@ -60,7 +60,13 @@ export default {
     li{
       list-style: none;
       margin-top: 20px;
+      font-weight: 600;
+      letter-spacing: 2px;
       cursor: pointer;
+
+      &.active{
+        color: #EE7600;
+      }
     }
     li:hover{
       color: red;

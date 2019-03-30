@@ -1,9 +1,13 @@
 <template lang="pug">
   .myInfo
     .contence
-      span 昵称：{{ name }}
-      br
-      span 手机号：{{ phone }}
+      table
+        tr
+          th 昵称
+          th {{ name }}
+        tr
+          td 手机号
+          td {{ phone }}
     .btn
       .pwdBtn(@click="toAlterPwd")
         span 修改密码
@@ -13,32 +17,41 @@
         span 修改手机
     .alter(v-if="todo !== 'none'")
       .alterPwd(v-if="todo === 0")
-        span 旧密码：
-        input(type="password" v-model="oriPwd" placeholder="请输入旧密码")
-        br
-        span 新密码：
-        input(type="password" v-model="newPwd" placeholder="请输入新密码")
-        br
-        span 确认修改
+        table
+          tr
+            td 旧密码:
+            td
+              input.input(type="password" v-model="oriPwd" placeholder="请输入旧密码")
+          tr
+            td 新密码:
+            td
+              input.input(type="password" v-model="newPwd" placeholder="请输入新密码")
+        .sureBtn 
+          span 确认修改
       .alterName(v-if="todo === 1")
-        span 密码：
-        input(type="password" v-model="pwd" placeholder="请输入密码")
-        br
-        span 新昵称：
-        input(type="text" v-model="newName" placeholder="请输入新昵称")
-        br
-        span 确认修改
+        table
+          tr
+            td 密码：
+            td
+              input.input(type="password" v-model="pwd" placeholder="请输入密码")
+          tr
+            td 新昵称：
+            td
+              input.input(type="text" v-model="newName" placeholder="请输入新昵称")
+        .sureBtn 
+          span 确认修改
       .alterPhone(v-if="todo === 2")
-        span 密码：
-        input(type="password" v-model="pwd" placeholder="请输入密码")
-        br
-        span 旧手机：
-        input(type="number" v-model="oriPhone" placeholder="请输入旧手机")
-        br
-        span 新手机：
-        input(type="number" v-model="newPhone" placeholder="请输入新手机")
-        br
-        span 确认修改
+        table
+          tr
+            td 密码：
+            td
+              input.input(type="password" v-model="pwd" placeholder="请输入密码")
+          tr
+            td 新手机：
+            td
+              input.input(type="number" v-model="newPhone" placeholder="请输入新手机")
+        .sureBtn 
+          span 确认修改
 </template>
 
 <script>
@@ -50,7 +63,7 @@ export default {
       oriPwd: '',
       newPwd: '',
       newName: '',
-      oriPhone: '',
+      //oriPhone: '',
       newPhone: '',
       pwd: '',
       todo: 'none',
@@ -108,9 +121,20 @@ export default {
   width: 100%;
   text-align: center;
   .contence{
-    padding-top: 80px;
     font-size: 18px;
+    font-weight: 600;
+    table{
+      width: 100%;
+      height: 150px;
+      background: #F5F5F5;
+      border-collapse:collapse;
+
+      tr { 
+        border-bottom: 1px solid;
+      }
+    }
   }
+
 
   .btn{
     margin-top: 100px;
@@ -122,7 +146,8 @@ export default {
     .pwdBtn, .nameBtn, .phoneBtn{
       width: 140px;
       height: 30px;
-      border-radius: 50%;
+      color: #fff;
+      border-radius: 10%;
       background: orange;
       display: flex;
       align-items: center;
@@ -136,40 +161,42 @@ export default {
     }
   }
 
+
   .alter{
     width: 100%;
     padding-top: 30px;
     font-size: 16px;
     display: flex;
+    justify-content: center;
 
     .alterPwd, .alterName, .alterPhone{
-      flex: 1;
-      
-      span{
-        line-height: 40px;
-        font-size: 16px;
+      table{
+        width: 400px;
+        height: 80px;
+        background: #F0F0F0;
+        margin: 0 auto;
+        border-collapse:collapse;
+
+        tr td{ 
+          border-bottom: 1px solid;
+        }
+
+        .input{
+          box-sizing: border-box;
+          width: 100%;
+          height: 100%;
+          padding-left: 20px;
+          border: none;
+        }
       }
-      input{
-        width: 200px;
-        height: 20px;
-        border: none;
-        outline: none;
-      }
-    }
-    .alterPwd, .alterName{
-      span:nth-child(7){
-        color: white;
-        padding: 6px 20px 6px 20px;
-        border-radius: 40px;
-        background: #EEC900;
-      }
-    }
-    .alterPhone{
-      span:nth-child(10){
-        color: white;
-        padding: 6px 20px 6px 20px;
-        border-radius: 40px;
-        background: #EEC900;
+      .sureBtn{
+        margin-top: 30px;
+        span{
+          color: white;
+          padding: 6px 20px 6px 20px;
+          border-radius: 40px;
+          background: orange;
+        }
       }
     }
   }

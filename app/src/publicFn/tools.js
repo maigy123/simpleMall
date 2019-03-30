@@ -1,3 +1,6 @@
+import CryptoJS from 'crypto-js'
+
+
 export function getCartNumber (axios, store) {
   var userId = sessionStorage.getItem('userId')
   if (userId !== '') {
@@ -12,6 +15,27 @@ export function getCartNumber (axios, store) {
   }
 }
 
+export function getAES (data) {    //加密
+  var key = 'abcdefghijklmn12'  //密钥
+  var iv = 'abcdefghijklmn12'
+  var encrypted = getAesString(data, key, iv) //密文
+  // var encrypted1 =CryptoJS.enc.Utf8.parse(encrypted)
+  return encrypted
+}
+
+
+function getAesString (data, _key, _iv) {     // 加密时函数调用
+  var key = CryptoJS.enc.Utf8.parse(_key)
+  var iv = CryptoJS.enc.Utf8.parse(_iv)
+  var encrypted =CryptoJS.AES.encrypt(data, key, {
+      iv: iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7
+  })
+  return encrypted.toString()  //返回的是base64格式的密文
+}
+
 export default {
-  getCartNumber
+  getCartNumber,
+  getAES
 }

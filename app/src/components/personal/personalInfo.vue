@@ -1,6 +1,6 @@
 <template lang="pug">
   .personalInfoPath
-    Error(v-if="isErr" :text="errText")
+    Error(v-if="errText !== ''" :text="errText")
     .myInfo
       li(v-for="(item, index) in myData" :key="index" :class="keyArr.includes(index)? {key: 1}: {value: 1}") {{item}}
       .toAlter
@@ -34,6 +34,7 @@
 
 <script>
 import Error from '@/components/public/error.vue'
+import { getAES } from '@/publicFn/tools'
 export default {
   data () {
     return{
@@ -47,7 +48,6 @@ export default {
       newPhone: '',
       pwd: '',
       phone: '',
-      isErr: false,
       errText: '',
       userId: ''
     }
@@ -113,26 +113,35 @@ export default {
     },
 
     alterPwd () {
-      var params = {userId: this.userId, pwd: this.newPwd, phone: this.phone}
+      var params = {userId: this.userId, pwd: getAES(this.newPwd), phone: this.phone}
       this.$reqs.post('users/alterPwd', params).then((res) => {
-        console.log(res.data)
+        if (res.data.code === 0) {
+          this.errDeal(修改成功)
+          this.getMyInfo()
+        } else {
+          this.errDeal(res.data.error)
+        }
       })
     },
 
     alterOthers () {
-      var params = {userId: this.userId, pwd: this.pwd}
+      var params = {userId: this.userId, pwd: getAES(this.pwd)}
       params.newUserName = this.newUserName? this.newUserName: this.myOrinData.userName
       params.newPayPwd = this.newPayPwd? this.newPayPwd: this.myOrinData.payPwd
       params.newPhone = this.newPhone? this.newPhone: this.myOrinData.phone
       this.$reqs.post('users/alterOthers', params).then((res) => {
-        console.log(res.data)
+        if (res.data.code === 0) {
+          this.errDeal(修改成功)
+          this.getMyInfo()
+        } else {
+          this.errDeal(res.data.error)
+        }
       })
     },
     errDeal (errText) {
       this.errText = errText
-      this.isErr = true
       setTimeout(() => {
-        this.isErr = false
+        this.errText = ''
       }, 2000)
     }
   }

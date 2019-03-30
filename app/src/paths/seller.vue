@@ -9,12 +9,12 @@
         span(@click="logout") 退出登录
         // span 用户：{{ sellerName }}
       .sellerBody
-        .menu
-          li(v-for="(item, index) in menu" :key="index" @click="showDetail(index)") {{ item }}
+        .menu(ref="menu")
+          li(v-for="(item, index) in menu" :key="index" @click="showDetail(index)" :class="{active: detailX === index}") {{ item }}
         .detail
           MyGoods(v-if="detailX === 0" :type="type")
           PostGoods(v-else-if="detailX === 1")
-          MyInfo(v-else="detailX ==== 2")
+          MyInfo(v-else)
 </template>
 
 <script>
@@ -49,11 +49,12 @@ export default {
   },
 
   mounted () {
-    this.$refs.seller.style.minHeight = this.minHeight - 130 + 'px'
+    this.$refs.seller.style.minHeight = this.minHeight - 60 + 'px'
     if (!this.isLogin) {
-      this.$refs.loginDiv.style.minHeight = this.minHeight - 130 + 'px'
+      this.$refs.loginDiv.style.minHeight = this.minHeight -60 + 'px'
     } else {
-      this.$refs.sellerDiv.style.minHeight = this.minHeight - 130 + 'px'
+      this.$refs.sellerDiv.style.minHeight = this.minHeight - 60 + 'px'
+      this.$refs.menu.style.minHeight = this.minHeight - 100 + 'px'
     }
   },
 
@@ -79,6 +80,9 @@ export default {
   width: 100%;
   .loginDiv{
     width: 100%;
+    background: url("./../assets/loginBackImg.jpg") no-repeat;
+    overflow: hidden;
+    background-size:cover;
     display: flex;
     flex-direction: row-reverse;
     align-items: center;
@@ -87,7 +91,7 @@ export default {
       height: 400px;
       width: 400px;
       margin-right: 200px;
-      border: 1px solid;
+      // border: 1px solid;
     }
   }
 
@@ -98,7 +102,7 @@ export default {
     .sellerHeader{
       width: 100%;
       height: 60px;
-      background: #FF3030;
+      background: #CD3700;
       color: white;
 
       span:nth-child(1){
@@ -111,7 +115,8 @@ export default {
         padding-right: 100px;
         font-size: 14px;
         line-height: 60px;
-        color: #2E2E2E;
+        // color: #2E2E2E;
+        color: #fff;
       }
       span:nth-child(3){
         float: right;
@@ -126,16 +131,26 @@ export default {
       display: flex;
       .menu{
         width: 300px;
-        // background: greenyellow;
-        text-align: center;
+        height: 100%;
+        background: #EAEAEA;
         padding-top: 50px;
+        font-weight: 600;
+        color: #969696;
+        letter-spacing: 2px;
 
         li{
+          width: 100%;
           list-style: none;
-          margin-top: 10px;
+          height: 50px;
+          text-align: center;
+          line-height: 50px;
+
+          &.active{
+            color: #EE7600;
+          }
         }
         li:hover{
-          color: red;
+          background: #EE7600;
         }
       }
       .detail{

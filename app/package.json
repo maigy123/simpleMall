@@ -9,7 +9,9 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "crypto-js": "^3.1.9-1",
     "pug-plain-loader": "^1.0.0",
+    "save-dev": "^2.0.0",
     "vue": "^2.5.21",
     "vue-cookies": "^1.5.12",
     "vue-router": "^3.0.2",

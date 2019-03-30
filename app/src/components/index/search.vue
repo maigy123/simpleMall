@@ -61,7 +61,7 @@ export default {
     width: 650px;
     // height: 100px;
     margin: 0 auto;
-    border: 1px white solid;
+    border: 1px #F5F5F5 solid;
     .search-frame{
       width: 100%;
       height: 40px;
@@ -109,7 +109,7 @@ export default {
     float: left;
     width: 170px;
     height: 107px;
-    padding: 20px 0 0 100px;
+    padding: 20px 0 0 150px;
     img{
       width: 170px;
       height: 107px;
