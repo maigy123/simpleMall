@@ -8,7 +8,7 @@ db.once('error', () => console.log('Mongo connection error'))
 db.once('open', () => console.log('Mongo connection successed'))
 
 const model = mongoose.Schema({
-  _id: Object,
+  // _id: Object,
   name: String,
   pwd: String,
   paypwd: String,

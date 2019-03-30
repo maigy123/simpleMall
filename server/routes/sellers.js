@@ -5,11 +5,9 @@ mongoose.connect('mongodb://localhost:27017/myMall')
  
 const db = mongoose.connection
 const model = mongoose.Schema({
-  _id: Object,
   name: String,
   pwd: String,
-  phone: String,
-  income: Number
+  phone: String
 }, {versionKey: false})
 const Models = mongoose.model('sellers', model)
 
@@ -44,8 +42,7 @@ router.post('/reg', (req, res, next) => {
       let newData = new Models({
         name: req.body.name,
         pwd: req.body.pwd,
-        phone: req.body.phone,
-        income: 0.0
+        phone: req.body.phone
       })
       newData.save((err, data) => {
         if (err) {

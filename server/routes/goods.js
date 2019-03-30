@@ -5,7 +5,6 @@ mongoose.connect('mongodb://localhost:27017/myMall')
 
 const db = mongoose.connection
 const model = mongoose.Schema({
-  _id: Object,
   name: String,
   price: Number,
   sellerId: String,
@@ -26,6 +25,7 @@ router.post('/postGoods', (req, res, next) => {
     var obj = {code: 0}
     if (err) {
       obj.code = 1
+      obj.error = err
       res.send(obj)
     } else {
       res.send(obj)
