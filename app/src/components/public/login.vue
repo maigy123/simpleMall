@@ -1,15 +1,16 @@
 <template lang="pug">
   .login
+    FindPwd(v-if="toFindPwd" :type="type" v-on:doBack="doBack")
     Error(v-if="isErr" :text="errText")
     .tips
       span 登录/注册
     form(@keyup.enter="toSure")
       .name
         img(src="@/assets/account.png")
-        input(type="text" v-model="name" placeholder="请输入账号")
+        input(type="text" v-model="name" maxlength="6" placeholder="请输入账号（3~6位字符）")
       .pwd
         img(src="@/assets/pwd.png")
-        input(type="password" v-model="pwd" placeholder="请输入密码")
+        input(type="password" v-model="pwd" maxlength="8" placeholder="请输入密码（6~8位字符）")
       .pwd(v-if="goReg && (type === 'user')")
         img(src="@/assets/pwd.png")
         input(type="password" v-model="payPwd" placeholder="请输入六位支付密码（仅限数字）")
@@ -19,13 +20,14 @@
       .button(@click="toSure")
         span {{ btnText }}
     .select
-      span 忘记密码
+      span(@click="findPwd") 忘记密码
       span(@click="toReg") 去注册
       span(@click="toLogin") 去登录
 </template>
 
 <script>
 import Error from '@/components/public/error.vue'
+import FindPwd from '@/components/public/findPwd.vue'
 import { getAES } from '@/publicFn/tools'
 export default {
   props: ['type'],
@@ -38,11 +40,13 @@ export default {
       btnText: '登 录',
       isErr: false,
       errText: '',
-      payPwd: ''
+      payPwd: '',
+      toFindPwd: false
     }
   },
   components: {
-    Error
+    Error,
+    FindPwd
   },
 
   created () {
@@ -52,6 +56,12 @@ export default {
   },
 
   methods: {
+    findPwd () {
+      this.toFindPwd = true
+    },
+    doBack () {
+      this.toFindPwd = false
+    },
     toReg () {
       if (!this.goReg) {
         this.goReg = true
@@ -134,12 +144,20 @@ export default {
       })
     },
     userRegister () {
-      if (this.payPwd.length === 6) {
+      if (this.name.length < 3) {
+        this.errText = '请正确输入用户名'
+        this.errDeal()
+      } else if (this.pwd.length < 6) {
+        this.errText = '请正确输入登录密码'
+        this.errDeal()
+      } else if (this.payPwd.length === 6 && (/^[0-9]{6}/g.test(this.payPwd))) {
         var params = {name: this.name, pwd: this.pwd, phone: this.phone, paypwd: this.payPwd}
         this.$reqs.post("/users/reg", params).then((res) => {
           if (res.data.code === 0) {
+            this.errText = '注册成功'
+            this.errDeal()
             this.$cookies.set('userName', this.name)
-            this.$emit('haveLogin')
+            this.toLogin()
           } else {
             this.errText = res.data.err
             this.errDeal()

@@ -10,9 +10,9 @@
         span 登录/注册
       router-link(tag="span" to="./")
         span 首页
-      router-link(tag="span" to="./test1")
+      // router-link(tag="span" to="./test1")
         span 测试页1
-      router-link(tag="span" to="./test2")
+      // router-link(tag="span" to="./test2")
         span 测试页2
     .right
       .cars(@click="checkLog('cart')")

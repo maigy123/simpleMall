@@ -8,11 +8,13 @@
           span(@click="clickMenu(index)") {{ item }}
       .detail
         WaitManager(v-if="menuSelected === 0" :type="type")
+        putOff(v-if="menuSelected === 1")
 </template>
 
 <script>
 import Login from '@/components/manager/login'
 import WaitManager from '@/components/public/listAndDetail'
+import putOff from '@/components/manager/putOff'
 export default {
   data () {
     return {
@@ -26,7 +28,8 @@ export default {
 
   components: {
     Login,
-    WaitManager
+    WaitManager,
+    putOff
   },
 
   created () {

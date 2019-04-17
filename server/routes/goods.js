@@ -9,7 +9,7 @@ const model = mongoose.Schema({
   price: Number,
   sellerId: String,
   class: Number,
-  status: Number,
+  stock: Number,
   desc: String,
   selledNum: 0,
   examine: Number,
@@ -20,7 +20,7 @@ const Models = mongoose.model('good', model)
 
 /* 上线商品 */
 router.post('/postGoods', (req, res, next) => {
-  let newData = new Models({ name: req.body.name, price: req.body.price, sellerId: req.body.sellerId, class: req.body.class, status: 0, desc: req.body.desc, selledNum: 0, examine: 0, reason: '', imgSrc: req.body.imgSrc})
+  let newData = new Models({ name: req.body.name, price: req.body.price, sellerId: req.body.sellerId, class: req.body.class, stock: req.body.stock, desc: req.body.desc, selledNum: 0, examine: 0, reason: '', imgSrc: req.body.imgSrc})
   newData.save((err, data) => {
     var obj = {code: 0}
     if (err) {
@@ -60,6 +60,7 @@ router.post('/updateGood', (req, res, next) => {
   var set = {
     name: req.body.name,
     price: req.body.price,
+    stock: req.body.stock,
     class: req.body.class,
     desc: req.body.desc}
   Models.update(selector, set, (err, data) => {
@@ -147,7 +148,6 @@ router.post('/classSortFind', (req, res, next) => {
     selector.name = new RegExp(req.body.searchText)
   }
   selector.examine = 1
-  selector.status = 0
   var sorted = (req.body.sort|| req.body.sort === 0)? req.body.sort: {}
   var path = req.body.path
   var obj = {code: 0}

@@ -94,7 +94,7 @@ router.post('/cart', (req, res, next) => {
               for (var x in _data2) {
                 for (var y in cart) {
                   if (_data2[x]._id == cart[y].id) {
-                    obj.data[x] = {id: _data2[x]._id, name: _data2[x].name, number: cart[y].number, imgSrc: _data2[x].imgSrc, price: _data2[x].price}
+                    obj.data[x] = {id: _data2[x]._id, name: _data2[x].name, number: cart[y].number, imgSrc: _data2[x].imgSrc, price: _data2[x].price, stock:  _data2[x].stock}
                   }
                 }
               }
@@ -104,6 +104,28 @@ router.post('/cart', (req, res, next) => {
           })
         }
       })
+    }
+  })
+})
+
+/* 商品及库存查询 */
+router.post('/getStock', (req, res, next) =>{
+  var selector = {$or: []}
+  for (var item of req.body.goodsId) {
+    selector.$or.push({_id: mongoose.Types.ObjectId(item)})
+  }
+  goods.model.find(selector, (err, data) => {
+    if (err) {
+      errDeal(err, res)
+    } else {
+      if (data[0]) {
+        var obj = {code: 0, data: []}
+        for (var i in data) {
+          obj.data.push({id: data[i]._id, stock: data[i].stock})
+        }
+      }
+      res.send(obj)
+      res.end()
     }
   })
 })
@@ -192,11 +214,26 @@ router.post('/pay', (req, res, next) => {
           res.send(obj)
           res.end()
           addSellerNum(req.body.goodsId, req.body.number)
+          reduceStock(req.body.goodsId, req.body.number)
         }
       })
     }
   })
 })
+
+function reduceStock (goodsId, number) {
+  var selector = {}
+  var set = {}
+  for (let i = 0; i < goodsId.length; i++) {
+    selector = {_id: mongoose.Types.ObjectId(goodsId[i])}
+    set = {$inc: {stock: -number[i]}}
+    goods.model.updateOne(selector, set, (err, data) => {
+      if (err) {
+        console.log(err)
+      }
+    })
+  }
+}
 
 function addSellerNum (goodsId, number) {
   var selector = {}

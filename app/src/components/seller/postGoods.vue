@@ -8,12 +8,14 @@
         .left
           span 商品名称：
           span 商品价格：
+          span 商品库存：
           span 商品品类：
           span 商品图片：
           span 商品描述：
         .right
           input(type="text" v-model="goodName" placeholder="请输入商品名称")
           input(type="number" v-model="price" placeholder="请输入商品价格")
+          input(type="number" v-model="stock" placeholder="请输入商品库存")
           .class
             li(v-for="(item, index) in classes" :key="index" @click="chooseCalss(index)")
               .classTip(:class="{active: classSelected === index}")
@@ -39,6 +41,7 @@ export default {
     return{
       goodName: '',
       price: '',
+      stock: '',
       imgSrc: '',
       classes: ['衣物', '家具', '饮食', '图书', '化妆品', '电子产品'],
       sellerId: '',
@@ -82,8 +85,11 @@ export default {
       if (this.goodName === '' || this.price === '' || this.imgSrc === '' || this.classSelected === '') {
         this.errText = '信息不能为空'
         this.exitErr()
+      } else if (this.stock <= 0) {
+        this.errText = '库存不能为零'
+        this.exitErr()
       } else {
-        var params = {name: this.goodName, price: this.price, sellerId: this.sellerId, class: this.classSelected, desc: this.desc, imgSrc: this.imgSrc}
+        var params = {name: this.goodName, price: this.price, sellerId: this.sellerId, class: this.classSelected, desc: this.desc, stock: Math.floor(this.stock), imgSrc: this.imgSrc}
         this.$reqs.post("/goods/postGoods", params).then((res) => {
           if (res.data.code === 0) {
             this.errText = '上线商品成功'
@@ -92,8 +98,8 @@ export default {
             this.imgSrc = ''
             this.classSelected = ''
             this.desc = ''
+            this.stock = ''
           } else {
-            console.log(res.data)
             this.errText = '上线商品失败'
           }
           this.exitErr()

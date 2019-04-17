@@ -9,10 +9,10 @@
         .price
           span ￥{{data.price}}
       .right
-        span 详情：{{ data.desc }}
         span 品类：{{ this.class }}
         span 销售量：{{data.selledNum }}
-        span 售卖状态： {{ this.status }}
+        span 商品库存： {{ data.stock }}
+        span 详情：{{ data.desc }}
         span(@click.stop="check(0)") 收藏商品
         span(@click.stop="check(1)") 加入购物车
 </template>
@@ -25,7 +25,6 @@ export default {
     return{
       classes: ['衣物', '家具', '饮食', '图书', '化妆品', '电子产品'],
       class: '',
-      status: ''
     }
   },
   components: {
@@ -49,11 +48,6 @@ export default {
           this.class = this.classes[i]
         }
       }
-      if (this.data.status === 0) {
-        this.status = '售卖中'
-      } else {
-        this.status = '已下架'
-      }
     },
     outDetail () {
       this.$emit('outDetail')
@@ -72,7 +66,8 @@ export default {
       }
     },
     addCollect (params) {
-      this.$reqs.post('/users/addCollect', params).then((res) => {
+      params.type = 'add'
+      this.$reqs.post('/users/collect', params).then((res) => {
         if (res.data.code === 0) {
           this.$emit('haveErr', '收藏成功')
         } else {

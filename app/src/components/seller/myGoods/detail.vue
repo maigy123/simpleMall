@@ -9,6 +9,10 @@
         span(@click="getImg") 点击更换照片
         input.input(type="file" ref="getImg" @change="processFile")
         span(@click="alterImg") 确认更换照片
+      .exmaine
+        span 审核结果：{{examine}}
+        br
+        span(v-if="examine === '失败'") 原因：{{data.reason}}
       .attrs
         .lists
           span 购买次数： {{ data.selledNum }}
@@ -17,7 +21,7 @@
           br
           span 品类： {{ this.class }}
           br
-          span 是否下架： {{ this.status }}
+          span 库存： {{ data.stock }}
           br
           span 商品描述：{{ data.desc}}
         .operations
@@ -27,11 +31,13 @@
         .left
           span 商品新名称：
           span 商品新价格：
+          span 商品新库存：
           span 商品新品类：
           span 商品新描述：
         .right
           input(type="text" v-model="newName" placeholder="请输入商品名称")
           input(type="number" v-model="newPrice" placeholder="请输入商品价格")
+          input(type="number" v-model="newStock" placeholder="请输入商品库存")
           .class
             li(v-for="(item, index) in classes" :key="index" @click="chooseCalss(index)")
               .classTip(:class="{active: newClass === index}")
@@ -41,7 +47,7 @@
             textarea(v-model="newDesc")
           .alterGood
             span(@click="alterGood") 修改商品
-      .putOff(v-if="toPutOff")
+      //.putOff(v-if="toPutOff")
         span(@click="puton") 上架商品
         span(@click="putoff") 下架商品
 </template>
@@ -53,13 +59,14 @@ export default {
     return{
       classes: ['衣物', '家具', '饮食', '图书', '化妆品', '电子产品'],
       class: '',
-      status: '',
-      operations: ['改商品名', '修改价格', '修改品类' , '商品状态', '商品描述'],
+      examine: '',
+      operations: ['改商品名', '修改价格', '修改品类' , '修改库存', '修改描述'],
       newName: '',
       newPrice: '',
+      newStock: '',
       newClass: '',
       toAlter: false,
-      toPutOff: false,
+      //toPutOff: false,
       haveAlterImg: false,
       newStatus: '',
       newDesc: ''
@@ -84,10 +91,12 @@ export default {
           this.class = this.classes[i]
         }
       }
-      if (this.data.status === 0) {
-        this.status = '售卖中'
+      if (this.data.examine === 0) {
+        this.examine = '待审核'
+      } else if (this.data.examine === 1) {
+        this.examine = '通过'
       } else {
-        this.status = '已下架'
+        this.examine = '失败'
       }
     },
     getImg () {
@@ -108,13 +117,14 @@ export default {
       this.newClass = n
     },
     alter (n) {
-      if (n !== 3) {
+      /* if (n !== 3) {
         this.toAlter = true
         this.toPutOff = false
       } else {
         this.toAlter = false
         this.toPutOff = true
-      }
+      } */
+      this.toAlter = true
     },
     puton () {
       if (this.data.status === 1) {
@@ -136,8 +146,9 @@ export default {
         _id: this.data._id,
         name: this.newName || this.data.name,
         price: this.newPrice || this.data.price,
+        stock: Math.floor(this.newStock) || this.data.stock,
         class: this.newClass || this.data.class,
-        desc: this.newDesc || this.data.desc
+        desc: this.newDesc || this.data.desc,
       }
       this.$reqs.post("goods/updateGood", params).then((res) => {
         if (res.data.code === 0) {
@@ -228,8 +239,12 @@ export default {
       }
     }
 
+    .exmaine{
+      margin: 10px 0 0 50px;
+    }
+
     .attrs{
-      margin-top: 30px;
+      margin-top: 20px;
       padding: 0 0 20px 50px;
       display: flex;
 

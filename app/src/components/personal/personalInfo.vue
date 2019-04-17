@@ -92,7 +92,7 @@ export default {
       if (n === 0) {
         if (this.newPayPwd !== '' && !(/^[0-9]{6}/g.test(this.newPayPwd))) {
           this.errDeal('支付密码必须是六位数字')
-        } else if (this.newPhone !== '' && !(/^[0-9]{11}/g.test(this.newPhone))) {
+        } else if (this.newPhone !== '' && !(/[0-9]{11}/g.test(this.newPhone))) {
           this.errDeal('请输入正确的手机号')
         } else if (this.newUserName !== '' && this.newUserName.length < 4) {
           this.errDeal('请输入正确的用户名')

@@ -13,14 +13,14 @@
         br
         span 品类： {{ this.class }}
         br
-        span 是否下架： {{ this.status }}
+        span 商品库存： {{ data.stock }}
         br
         span 商品描述：{{ data.desc}}
       .toCartDiv
       .cartImg(@click="addCart")
         img(:src="cartImg")
       .cancelCollectDiv(v-if="type === 'myCollect'")
-      .cancelCollectImg
+      .cancelCollectImg(@click="cancelCollect")
         img(:src="deleteImg")
 </template>
 
@@ -60,11 +60,6 @@ export default {
           this.class = this.classes[i]
         }
       }
-      if (this.data.status === 0) {
-        this.status = '售卖中'
-      } else {
-        this.status = '已下架'
-      }
     },
 
     addCart () {
@@ -72,6 +67,18 @@ export default {
       this.$reqs.post('/carts/addCart', params).then((res) => {
         if (res.data.code === 0) {
           this.errDeal('加入购物车成功')
+        } else {
+          this.errDeal(res.data.error)
+        }
+      })
+    },
+
+    cancelCollect () {
+      var params = {type: 'cancel', userId: sessionStorage.getItem("userId"), goodsId: this.data._id}
+      this.$reqs.post('/users/collect', params).then((res) => {
+        if (res.data.code === 0) {
+          this.errDeal('移除收藏商品成功')
+          this.$emit('updateData')
         } else {
           this.errDeal(res.data.error)
         }

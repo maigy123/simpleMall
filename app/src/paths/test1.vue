@@ -5,6 +5,7 @@
     button(@click="getSession") 获取
     input(type="text" v-model="aesText")
     button(@click="getAes") 密文
+    button(@click="getStore") 获取Store
 </template>
 
 <script>
@@ -35,6 +36,9 @@ export default {
     getAes () {
       var miwen = getAES(this.aesText)
       alert(miwen)
+    },
+    getStore () {
+      console.log(this.$store.state.sellerInfo)
     }
   }
 }

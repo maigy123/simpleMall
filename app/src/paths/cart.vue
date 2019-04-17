@@ -35,8 +35,9 @@ export default {
   data () {
     return {
       data: [],
+      stockData: [],
       dataSelected: [],
-      menus: ['金额（元）', '数量', '单价（元）'],
+      menus: ['库存', '金额（元）', '数量', '单价（元）'],
       balance: 0,
       sum: 0,
       selectAll: false,
@@ -65,11 +66,25 @@ export default {
     getData () {
       var params = {userId: sessionStorage.getItem('userId')}
       this.$reqs.post('/carts/cart', params).then((res) => {
+        console.log(res.data.data)
         if (res.data.code === 0) {
           this.data = res.data.data
           this.balance = res.data.balance
           this.setSelectedArr()
           this.getSum()
+          // this.getStock()
+        }
+      })
+    },
+
+    getStock () {
+      var params = {goodsId: []}
+      for(var item of this.data) {
+        params.goodsId.push(item.id)
+      }
+      this.$reqs.post('/carts/getStock', params).then((res) => {
+        if (res.data.code === 0) {
+          this.stockData = res.data.data
         }
       })
     },

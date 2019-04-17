@@ -64,8 +64,9 @@ export default {
       this.$refs.sellerDiv.style.minHeight = this.minHeight - 130 + 'px'
     },
     logout () {
-      sessionStorage.removeItem('sellerName')
+      sessionStorage.removeItem('sellerId')
       this.isLogin = !this.isLogin
+      this.$store.commit('setSellerInfo', {})
       this.$refs.loginDiv.style.minHeight = this.minHeight - 130 + 'px'
     },
     showDetail (x) {
@@ -131,7 +132,6 @@ export default {
       display: flex;
       .menu{
         width: 300px;
-        height: 100%;
         background: #EAEAEA;
         padding-top: 50px;
         font-weight: 600;

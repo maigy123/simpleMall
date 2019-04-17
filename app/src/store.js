@@ -8,6 +8,7 @@ export default new Vuex.Store({
     carts: [],
     getNewCarts: false,
     cartNum: 0,
+    sellerInfo: {}
   },
   getters: {
     cartNum: (state) => {
@@ -17,6 +18,9 @@ export default new Vuex.Store({
   mutations: {
     alterCart (state, number) {
       state.cartNum = number
+    },
+    setSellerInfo (state, data) {
+      state.sellerInfo = data
     }
   },
   actions: {}

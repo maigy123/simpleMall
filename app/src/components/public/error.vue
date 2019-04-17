@@ -36,7 +36,7 @@ export default {
   bottom:0;
   background: #EAEAEA;
   opacity: 0.9;
-  z-index: 6;
+  z-index: 8;
   display: flex;
   justify-content: center;
   align-items: center;

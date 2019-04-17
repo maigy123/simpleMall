@@ -50,6 +50,7 @@ export default {
       }
     },
     login () {
+
       var params = {name: this.name, pwd: this.pwd}
       this.$reqs.post("/managers/login", params).then((res) => {
         if (res.data.code === 0) {

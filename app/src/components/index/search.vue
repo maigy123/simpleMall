@@ -8,7 +8,7 @@
         span 搜 索
       .search-frame
         input.input(type="text" v-model='inputText' placeholder="搜索 商品 / 卖家")
-      .tips
+      //.tips
         li(v-for="(item, index) in tips" :key="index")
           span {{ item }}
 </template>
@@ -65,7 +65,7 @@ export default {
     .search-frame{
       width: 100%;
       height: 40px;
-      margin-top: 40px;
+      margin-top: 50px;
       background: red;
       .input{
         width: 500px;
@@ -79,7 +79,7 @@ export default {
       float: right;
       width: 120px;
       height: 40px;
-      margin-top: 40px;
+      margin-top: 50px;
       color: white;
       cursor: pointer;
       display: flex;

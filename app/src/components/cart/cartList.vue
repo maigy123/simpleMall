@@ -1,5 +1,6 @@
 <template lang="pug">
   .cartList
+    Error(v-if="errText !== ''" :text="errText")
     Confirm(v-if="openDeleteConfirm" :type="confrimType" v-on:res="getConfirmRes")
     .selectDiv(:class="{active: selected}" @click="alterSelect")
     .imgDiv
@@ -8,6 +9,8 @@
       span {{data.name}}
     .deleteDiv
       img(src="@/assets/delete.png" @click="toDelete")
+    .stockDiv
+      span {{ data.stock }}
     .sumDiv
       span {{ sum }}
     .number
@@ -19,6 +22,7 @@
 </template>
 
 <script>
+import Error from '@/components/public/error'
 import Confirm from '@/components/cart/confirm'
 export default {
   props: ['data', 'index', 'selectAll'],
@@ -28,7 +32,8 @@ export default {
       newData: {},
       selected: true,
       openDeleteConfirm: false,
-      confrimType: 'delete'
+      confrimType: 'delete',
+      errText: ''
     }
   },
 
@@ -49,7 +54,8 @@ export default {
   },
 
   components: {
-    Confirm
+    Confirm,
+    Error
   },
 
   created () {
@@ -82,8 +88,12 @@ export default {
     },
 
     addNum () {
-      this.data.number++
-      this.postAlterNum()
+      if (this.data.number + 1 > this.data.stock) {
+        this.errDeal('库存不足')
+      } else {
+        this.data.number++
+        this.postAlterNum()
+      }
     },
 
     postAlterNum () {
@@ -110,6 +120,13 @@ export default {
         })
       }
       this.openDeleteConfirm = false
+    },
+
+    errDeal (text) {
+      this.errText = text
+      setTimeout(() => {
+        this.errText = ''
+      }, 1500)
     }
   }
 }
@@ -165,7 +182,7 @@ export default {
     }
   }
 
-  .sumDiv, .number, .price{
+  .stockDiv, .sumDiv, .number, .price{
     float: right;
     width: 150px;
     height: 100%;
